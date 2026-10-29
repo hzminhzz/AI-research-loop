@@ -491,7 +491,7 @@ async def autonomous_run(
                   "experiment": str(experiment.relative_to(checkout)),
                   "code": str(module.relative_to(checkout))})
     result["strategy_sha256"] = hashlib.sha256(module.read_bytes()).hexdigest()
-    result["contract_id"] = CONTRACT_ID
+    result["contract_id"] = route.contract_id
     result["strategy_path"] = str(module.relative_to(checkout))
     result["experiment_path"] = str(experiment.relative_to(checkout))
 

@@ -263,6 +263,63 @@ discovery funnel; any passing candidate must be examined with Warden's
 trial-history and deflated Sharpe / untouched OOS controls before making
 economic claims. No guarantee of a passing or profitable strategy is made.
 
+## Autonomous contract creation (v0.6)
+
+`src/workflow/contract_factory.py` supplies a deterministic contract compiler
+for research-agent use. The model may **request** a source-specific horizon or
+market, but it cannot edit Warden YAML, lower a trading cost, invent source
+snapshots, move a validation split, or access protected holdouts. The compiler
+derives a versioned contract from the immutable **parent market dataset** and
+pins the identical SHA-256 with its original data provenance.
+
+```bash
+# Dry-run only: creates NO contracts and consumes NO trials.
+python -m src.workflow.contract_factory \
+  --quant-lab /home/quant/dev/quant-lab \
+  --request-json examples/contract_factory/funding_level_24h_request.json
+
+# One-time delegated research contract activation, for a source whose
+# derived contract ID does not already exist (uses an explicit operator grant).
+RESEARCH_CONTRACT_DELEGATION=principal-approved-2026-10-30-research-contracts \
+python -m src.workflow.contract_factory \
+  --quant-lab /home/quant/dev/quant-lab \
+  --request-json path/to/new_reviewed_source_request.json \
+  --activate
+```
+
+Activation is fail-closed: approved parent contracts only, exact pinned market
+bytes, no unknown provenance, no missing mandatory columns, compatible
+label/embargo versus validation fold width, conservative fee/slippage floors,
+unmodified prior Warden manifest entries, exclusive new-file creation and a
+hard maximum of eight derived research contracts. It records a cross-contract
+**selection group** and the existing underlying-dataset selection-attempt count;
+a new contract ID is never evidence of an independent OOS test.
+
+This operator delegation is **not** a human-held HMAC signing key. If the Warden
+manifest has an independent digital signature, automated activation is refused.
+Each research-only addition is explicitly labeled as delegated and unsigned.
+Full evaluation still follows Warden, and production holdout unsealing, broker
+orders and capital allocation are not delegated.
+
+The first live use created
+`AUTO_CRYPTO_PERPS_TOP100_1H_V1_H24_E24_F45_S20_V1` from the existing
+Binance top-100 1h snapshot. The data digest and split were unchanged; the
+evaluation horizon/embargo were raised to 24 hours and taker fee floor to 4.5
+bps/side. Warden verified a Binance-only adaptation of a publicly published
+funding-level strategy (1,926,144 bars), then **rejected Stage 1** at profit
+factor 1.130, against a required minimum 1.150. This is a counted negative
+attempt, **not** approval for a live strategy. Details remain in quant-lab
+`.workspace/hypotheses/HYP-AUTO-FUNDING7D-BINANCE-20261030_RESULT.md`.
+
+**Remaining work for full hands-free strategy research:** The current
+`social_campaign` still picks from reviewed frozen templates and has a
+bounded daily cycle quota. The contract factory is independently callable, but
+it is not a general unrestricted AI-to-Python compiler or a self-attesting
+data-vendor connector. Arbitrary source-specific code generation, fresh data
+provider integration and full stage 2/3 retry orchestration require a separate
+sandboxed agent executor and validation before deployment. Do not claim those
+features already run automatically.
+
 ## GitHub Actions
 
 `.github/workflows/ci.yml`: contract tests, regression tests, synthetic smoke and frozen replay.
