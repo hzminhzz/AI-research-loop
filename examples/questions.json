@@ -1,0 +1,10 @@
+[
+  {
+    "research_id": "synthetic-event-001",
+    "question": "For a synthetic scenario, estimate whether an event resolves positively",
+    "cutoff_date": "2026-01-15T00:00:00Z",
+    "base_rate": 0.5,
+    "required_kinds": ["historical"],
+    "open_subquestions": ["What historical baseline is available?"]
+  }
+]

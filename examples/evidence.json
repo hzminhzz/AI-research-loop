@@ -1,0 +1,12 @@
+[
+  {
+    "source_id": "fixture-historical-001",
+    "kind": "historical",
+    "uri": "file://fixtures/historical",
+    "published_at": "2026-01-01T00:00:00Z",
+    "available_at": "2026-01-02T00:00:00Z",
+    "snippet": "Synthetic historical base rate is 50%; for demonstration only.",
+    "provider": "local_fixture",
+    "facts": {"base_rate": "0.5"}
+  }
+]
