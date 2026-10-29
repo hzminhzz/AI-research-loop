@@ -1,0 +1,79 @@
+{
+  "run_id": "AIR-E2E-20261029-001",
+  "hypothesis_id": "HYP-AIR-20261029-001",
+  "attempt_id": "ATT-f0f2cb2a9facbf51-001",
+  "as_of_date": "2026-10-29T10:01:35Z",
+  "source_mode": "HUMAN_ASSISTED_PUBLISHER_ABSTRACTS_NO_LLM_API",
+  "research_forecast": "ABSTAINED",
+  "probability": null,
+  "architecture": {
+    "research_repo": "hzminhzz/AI-research-loop",
+    "research_git_commit": "52d057b96c70286b74364b093f6182a2e8354609",
+    "warden_repo": "hzminhzz/quant-lab",
+    "warden_local_head": "b8deedb",
+    "contract_id": "CRYPTO_PERPS_1H_V2",
+    "data_role": "exploratory",
+    "data_provenance": "verified_market",
+    "data_sha256": "7d8751eb44c8177fee2828fb354a650f29fe4741d1e993f06ae1afdb025b13e2",
+    "asset_count": 8,
+    "rows": 105024,
+    "train_start": "2024-01-01T00:00:00Z",
+    "val_start": "2025-01-01T00:00:00Z",
+    "val_end": "2025-07-01T00:00:00Z",
+    "holdout_accessed": false,
+    "next_bar_execution": true,
+    "fee_bps_one_way": 4,
+    "slippage_bps_one_way": 2,
+    "source_archive_sha256": "998063473330ee2e756b08b4a8025349e0f5441a13a0c9389da6de559621ee2f"
+  },
+  "pre_declared_strategy": {
+    "signal": "At 00:00 UTC, compute close[t]/close[t-24]-1, normalized by 720-hour rolling std of overlapping 24h returns from completed bars strictly before t. If abs(z)>=2, position follows shock sign for next UTC day.",
+    "z_threshold": 2,
+    "lookback_hours": 24,
+    "volatility_window_hours": 720,
+    "rebalance_hour_utc": 0,
+    "max_gross": 1,
+    "max_per_asset": 0.25,
+    "parameter_search": false
+  },
+  "stage0": {
+    "registered": true,
+    "warden_worktree_integrity": true,
+    "forecast_abstention": true
+  },
+  "causality": {
+    "prefix_invariance_passed": true,
+    "verified_rows": 105024
+  },
+  "stage1": {
+    "status": "REJECT",
+    "stage": "STAGE_1_SIGNAL",
+    "passed": false,
+    "market_eligible": true,
+    "metrics": {
+      "profit_factor": 0.8796927768756342,
+      "bootstrap_p_value": 0.8,
+      "conditional_edge": -0.0003311701235189882,
+      "time_in_market": 0.17679558011049723,
+      "avg_holding_bars": 39.13375796178344,
+      "trade_edge": -0.01295993145796601
+    },
+    "requirements": {
+      "profit_factor_min": 1.15,
+      "bootstrap_p_value_below": 0.05,
+      "time_in_market_min": 0.05,
+      "trade_edge_min": 0.0009
+    },
+    "gate_failure": [
+      "profit_factor",
+      "bootstrap_p_value",
+      "trade_edge"
+    ],
+    "gate_pass": [
+      "time_in_market"
+    ]
+  },
+  "trials_consumed": 0,
+  "selection_attempt_recorded": true,
+  "disposition": "Do not promote; negative real-data result; no parameter re-tuning or holdout read."
+}

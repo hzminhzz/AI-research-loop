@@ -1,0 +1,7 @@
+{
+  "contract_id": "CRYPTO_PERPS_1H_V2",
+  "strategy_family": "rules_ts",
+  "counterparty_or_friction": "Overreacting takers and slower liquidity suppliers may create drift, while spread, slippage, position turnover and funding can destroy the expected profit.",
+  "source_provenance": "Research papers: Caporale & Plastun (2020) https://doi.org/10.1007/s11408-020-00357-1; Wen et al (2022) https://papers.ssrn.com/abstract=4080253. Novel fixed adaptation to 8 Binance USDT perps is unvalidated. Captured 2026-10-29. Human-assisted ChatGPT research; not a live LLM API run.",
+  "llm_model_id": "gpt-6-chat-assisted-reviewed"
+}

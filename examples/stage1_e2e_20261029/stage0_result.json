@@ -1,0 +1,15 @@
+{
+  "run_id": "AIR-E2E-20261029-001",
+  "forecast_status": "ABSTAINED",
+  "source_count": 2,
+  "source_ids": [
+    "caporale_plastun_2020",
+    "wen_bouri_2022"
+  ],
+  "forecast_probability": null,
+  "stage0_thesis": "runs/air_e2e_20261029_001/thesis_registry/a325b524a4c55283.json",
+  "stage0_warden_native": "runs/air_e2e_20261029_001/warden_export/HYP-AIR-20261029-001.yaml",
+  "warden_file_sha256": "2babbebed8531d05e52e188cb67d6fc912d9cd021b5bf7ebd34716460d8fb5ad",
+  "research_mode": "HUMAN_ASSISTED_SOURCES_NO_LIVE_LLM",
+  "research_archive_sha256": "998063473330ee2e756b08b4a8025349e0f5441a13a0c9389da6de559621ee2f"
+}

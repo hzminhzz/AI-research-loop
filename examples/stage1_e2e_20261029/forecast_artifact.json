@@ -1,0 +1,16 @@
+{
+  "research_id": "AIR-E2E-20261029-001",
+  "probability_forecast": null,
+  "confidence_score": 0.0,
+  "primary_rationale": "Two published studies motivate a test of intraday crypto continuation, but neither validates this specific eight-perpetual fixed-rule strategy over the predeclared 2025 validation interval or contract costs.",
+  "evidence_citations": [
+    "caporale_plastun_2020",
+    "wen_bouri_2022"
+  ],
+  "key_uncertainties": [
+    "No calibrated probability of passing Warden Stage 1.",
+    "Historical spot-market findings may not generalize to Binance USD-margined perps.",
+    "All rule thresholds are predeclared test adaptations, not source-quoted rules."
+  ],
+  "abstention_flag": true
+}

@@ -1,0 +1,34 @@
+[
+  {
+    "source_id": "caporale_plastun_2020",
+    "kind": "historical",
+    "uri": "https://link.springer.com/article/10.1007/s11408-020-00357-1",
+    "published_at": "2020-05-27T23:59:59Z",
+    "available_at": "2020-05-28T00:00:00Z",
+    "archived_at": "2026-10-29T10:00:27Z",
+    "source_version": "publisher-2020-05-27-vor-chat-capture-20261029",
+    "snippet": "Cryptocurrency abnormal daily returns have been followed by intraday momentum in the historical BTC ETH LTC study; the evidence is not a direct test of modern Binance perpetuals.",
+    "provider": "springer_abstract_manually_transcribed",
+    "facts": {
+      "research_scope": "BTC ETH LTC historical spot returns through 2019",
+      "economic_mechanism": "temporary price continuation after exceptional daily returns",
+      "publication_date_precision": "date only, conservative end-of-day UTC substituted"
+    }
+  },
+  {
+    "source_id": "wen_bouri_2022",
+    "kind": "historical",
+    "uri": "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4080253",
+    "published_at": "2022-06-14T23:59:59Z",
+    "available_at": "2022-06-15T00:00:00Z",
+    "archived_at": "2026-10-29T10:00:27Z",
+    "source_version": "ssrn-revised-2022-06-14-chat-capture-20261029",
+    "snippet": "Cryptocurrency intraday returns exhibit both momentum and reversal, with effects varying with liquidity, jumps and other regimes; historical BTC-centered empirical evidence.",
+    "provider": "ssrn_abstract_manually_transcribed",
+    "facts": {
+      "research_scope": "historical hourly BTC and other crypto, published 2022",
+      "interpretation": "regime dependence, not guaranteed generalization",
+      "publication_date_precision": "date only, conservative end-of-day UTC substituted"
+    }
+  }
+]
