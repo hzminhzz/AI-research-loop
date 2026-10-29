@@ -112,7 +112,37 @@ python -m src.workflow.warden \
   --output runs/warden-handoff
 ```
 
-The thesis file conforms to `src/workflow/registry.py:StrategyThesis`; the mapping conforms to `src/workflow/warden.py:WardenHandoff`. Inspect the exported YAML and contract before invoking `warden register-hypothesis <path>` inside the authorized quant-lab checkout. Stage 1–4 causal screening, costs, trial budgets, DSR and holdout integrity must continue using Warden's own governance. **No automatic registration, backtest, unseal, or live orders occur here.**
+The thesis file conforms to `src/workflow/registry.py:StrategyThesis`; the mapping conforms to `src/workflow/warden.py:WardenHandoff`. The manual exporter itself does not register or run experiments. The separate opt-in autonomous command below **can register and screen Stage 1** under Warden, but cannot backtest, unseal a holdout, or trade. Stage 2–4 causal screening, costs, trial budgets, DSR and holdout integrity remain Warden-owned.
+
+## Autonomous OpenRouter -> Warden Stage 1 (opt-in, on the VPS)
+
+This is a **separate, bounded one-thesis research intake**, not the generic forecasting ensemble.
+The OpenRouter key is read from the local, untracked `.env` file (or `OPENROUTER_API_KEY` in the process environment). Never commit or print the key.
+
+```bash
+python -m pip install -e ".[test]"
+python -m src.autoresearch \
+  --env-file .env \
+  --quant-lab /home/quant/dev/quant-lab \
+  --output runs/autoresearch
+```
+
+Or use the installed `quant-autoresearch` command. Each invocation:
+
+1. Validates Warden worktree integrity and the pinned real-data contract `CRYPTO_PERPS_1H_V2`.
+2. Queries public OpenAlex academic metadata, independently cross-checks DOI publication dates against Crossref, rejects missing abstracts/retractions/post-2024 sources, and captures the current records in a SHA-256 pinned local archive.
+3. Uses `poolside/laguna-s-2.1:free`, falling back to `cohere/north-mini-code:free` on provider errors. Neither supports enforced `response_format`; the fallback uses a **no-execution function-call output channel**, and Pydantic validates both. HTTP 401/403 fail closed.
+4. Generates a structured thesis **only** from two reviewable, pre-frozen executable templates: `shock_reversal` or `volume_breakout`. The LLM cannot generate Python, select parameter grids, lower gates or execute orders. An evidence-insufficient proposal can abstain.
+5. Checks Warden's prior selection-attempt registry to suppress a repeat of an already screened template/code/contract combination. Fresh proposals export Warden-native YAML; Warden registers the thesis, verifies prefix-invariance and executes **one** Stage 1 screen.
+6. Stops on Stage 1 pass, reject, abstain, duplicate or any blocker. It never runs Stage 2+, reads holdouts, performs optimization, or changes Warden governance.
+
+The source archive is **captured today**: the current OpenAlex abstract is not independently proven to be the exact version available in 2021. Crossref verifies publication dates, not historical text vintages. Current paper abstracts may be sent to OpenRouter's free model providers, which may retain or train on such inputs. **Do not submit private company data or protected trading records to these free endpoints.**
+
+A completed real-data run is documented at `examples/autoresearch_live_20261029/`. The model selected a four-hour shock-reversal strategy; Warden Stage 1 rejected it, recording one real selection attempt. The original papers are hypotheses, **not a verified edge in Binance perpetuals**.
+
+The default and opt-in GitHub Actions synthetic/archival forecasting workflows are unchanged. Autonomous Stage 1 is intentionally **VPS-local only**: an ephemeral GitHub runner does not have the pinned `quant-lab` dataset, append-only Warden registry, or the local `.env` key.
+
+**Limits:** only two frozen strategy templates; no calibrated forecasting, licensed historical-vintage web service, live API market-data ingestion, automatic strategy-family expansion, or validated holdout outcomes. Free models can be rate limited or retired at any time. Failed model requests and duplicate thesis selections do not consume Warden trials.
 
 ## GitHub Actions
 
@@ -122,4 +152,4 @@ The thesis file conforms to `src/workflow/registry.py:StrategyThesis`; the mappi
 
 ## Limitations
 
-No licensed PIT web/SEC/market connector, cryptographically attested data history, resolution oracle, external audit anchor, inference cost dashboard, load/chaos testing, or verified profitable trading strategy is bundled. The pipeline is a **research component**, not a trading execution system or an independent substitute for Warden.
+No licensed historical-vintage PIT web/SEC/market connector, cryptographically attested data history, resolution oracle, external audit anchor, inference cost dashboard, load/chaos testing, or verified profitable trading strategy is bundled. The pipeline is a **research component**, not a trading execution system or an independent substitute for Warden.

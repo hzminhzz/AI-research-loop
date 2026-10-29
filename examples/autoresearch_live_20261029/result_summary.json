@@ -1,0 +1,84 @@
+{
+  "run_id": "AIR-OR-20261029-102247",
+  "hypothesis_id": "HYP-AIR-20261029-102247",
+  "model": "poolside/laguna-s-2.1:free",
+  "fallback_config": "cohere/north-mini-code:free",
+  "model_attempts": [
+    {
+      "model": "poolside/laguna-s-2.1:free",
+      "status": "ok",
+      "error_type": ""
+    }
+  ],
+  "template_id": "shock_reversal",
+  "selection_attempt_id": "ATT-f331ab2845877aa0-001",
+  "source_ids": [
+    "alex_W3204386317",
+    "alex_W3197724220"
+  ],
+  "source_index": [
+    {
+      "source_id": "alex_W3204386317",
+      "title": "Up or down? Short-term reversal, momentum, and liquidity effects in cryptocurrency markets",
+      "doi": "https://doi.org/10.1016/j.irfa.2021.101908",
+      "publisher_date_conservative": "2021-11-30T23:59:59Z",
+      "current_archive_capture": "2026-10-29T10:22:48.588233Z",
+      "source_version": "ad8c860d20f8966dab44ed141c620866f2ce1f38216fc5e2"
+    },
+    {
+      "source_id": "alex_W3197724220",
+      "title": "Lottery-like preferences and the MAX effect in the cryptocurrency market",
+      "doi": "https://doi.org/10.1186/s40854-021-00291-9",
+      "publisher_date_conservative": "2021-09-08T23:59:59Z",
+      "current_archive_capture": "2026-10-29T10:22:48.916667Z",
+      "source_version": "a2b32289299c5642eb681a2fade10d088fc2f79cee4d1c41"
+    },
+    {
+      "source_id": "alex_W3024233237",
+      "title": "Seasonality in the Cross-Section of Cryptocurrency Returns",
+      "doi": "https://doi.org/10.1016/j.frl.2020.101566",
+      "publisher_date_conservative": "2020-07-31T23:59:59Z",
+      "current_archive_capture": "2026-10-29T10:22:49.626362Z",
+      "source_version": "0a15476918b19c80458f1322c11ec013e6d8b7b2d832cd9c"
+    },
+    {
+      "source_id": "alex_W4283264467",
+      "title": "Behavioural finance and cryptocurrencies",
+      "doi": "https://doi.org/10.1108/rbf-11-2021-0256",
+      "publisher_date_conservative": "2022-09-05T23:59:59Z",
+      "current_archive_capture": "2026-10-29T10:22:49.960459Z",
+      "source_version": "e2f290d5dcff4cd8a74b3944d0e602f7068fdc8fb8c7aef1"
+    }
+  ],
+  "source_archive_sha256": "21e3bedda0b3937e455099d84e930ccf00aee2af0a72e3e9a1094f483a136314",
+  "archive_path_local": "runs/autoresearch/AIR-OR-20261029-102247/capture/evidence.json",
+  "strategy_sha256": "484c70355b39aac13b6eaf32a2d97660db57cc044816c4592d0d691fcca0502d",
+  "dataset_contract": "CRYPTO_PERPS_1H_V2",
+  "dataset_sha256": "7d8751eb44c8177fee2828fb354a650f29fe4741d1e993f06ae1afdb025b13e2",
+  "validation_start": "2025-01-01T00:00:00Z",
+  "validation_end": "2025-07-01T00:00:00Z",
+  "rows_verified": 105024,
+  "causal_verify_passed": true,
+  "stage1": {
+    "data_provenance": "verified_market",
+    "market_eligible": true,
+    "metrics": {
+      "avg_holding_bars": 7.814410893273656,
+      "bootstrap_p_value": 0.975,
+      "conditional_edge": -0.00039074780974806536,
+      "profit_factor": 0.7648135780128076,
+      "time_in_market": 0.23779926335174953,
+      "trade_edge": -0.003053463941018104
+    },
+    "notes": "PF=0.76, Edge=-3.9bps, TiM=23.8%, Holding=7.8h",
+    "passed": false,
+    "provenance_reason": "verified market data",
+    "strategy_family": "rules_ts"
+  },
+  "holdout_accessed": false,
+  "trials_consumed": 0,
+  "selection_attempts_consumed": 1,
+  "source_vintage": "Current 2026 capture with independently checked publication dates; historical abstract version NOT guaranteed",
+  "free_fallback_full_contract_probe": "HTTP 200; function tool arguments passed Pydantic ResearchProposal; no Warden mutation",
+  "qualification": "STAGE_1_REJECT"
+}
