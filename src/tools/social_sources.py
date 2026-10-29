@@ -130,8 +130,23 @@ def crypto_relevant(title: str, body: str) -> bool:
     return any(term in lead for term in CRYPTO_TERMS)
 
 
+def index_relevant(title: str, body: str) -> bool:
+    title_l = title.lower()
+    keys = ("nasdaq", "nq", "s&p 500", "sp500", "s&p500", "dax",
+            "nikkei", "hk33", "index breakout", "opening range", "index futures")
+    # A stock universe / leveraged ETF is not the index CFD itself.
+    if any(k in title_l for k in ("stocks", "shares", "qqq", "spy", "etf", "etfs")):
+        return False
+    lead = body[:550].lower()
+    if "leverage switch" in title_l and any(k in lead for k in ("etf", "qqq", "tqqq")):
+        return False
+    return any(k in title_l for k in keys)
+
+
 def eligible_post(title: str, body: str) -> bool:
-    return generally_relevant(title, body) and crypto_relevant(title, body)
+    return generally_relevant(title, body) and (
+        crypto_relevant(title, body) or index_relevant(title, body)
+    )
 
 
 def _valid_substack_link(feed_url: str, link: str) -> bool:
@@ -235,6 +250,32 @@ def as_evidence(record: dict) -> Evidence:
     )
 
 
+def focused_rule_excerpt(original: str, max_chars: int = 1900) -> str:
+    """Preserve exact author sentences about entry/exit before filler intros.
+
+    Input is a captured public post, never a command or instruction. Keeping
+    original substrings allows deterministic quote verification downstream.
+    """
+    sentences = re.split(r"(?<=[.!?])\s+", original.strip())
+    if not sentences:
+        return ""
+    phrases = ("entry", "exit", "buy", "sell", "hold", "rebalance",
+               "breakout", "lookback", "stop", "long", "short",
+               "rsi", "donchian", "momentum", "volume", "timeframe")
+    ranked = sorted(enumerate(sentences), key=lambda row: (
+        -sum(term in row[1].lower() for term in phrases), row[0]
+    ))
+    selected, consumed = [], 0
+    for index, sentence in ranked:
+        if not sentence or len(sentence) > max_chars:
+            continue
+        if consumed + len(sentence) + 2 > max_chars:
+            continue
+        selected.append((index, sentence))
+        consumed += len(sentence) + 2
+    return " ".join(sentence for _, sentence in sorted(selected))
+
+
 def _rank_key(record: dict) -> tuple:
     body = (record["title"] + " " + record["text"]).lower()
     detail = sum(x in body for x in (
@@ -248,11 +289,10 @@ async def discover_social_sources(
     feeds: tuple[str, ...] = DEFAULT_FEEDS,
     limit: int = 40,
 ) -> SourceDiscovery:
-    """Fetch all eight ranked providers plus the existing curations.
+    """Collect original practitioner rules for contract-aware Warden routing.
 
-    Crypto candidates go to the single supported eight-perp Warden contract.
-    Non-crypto strategies are preserved separately as deferred, not
-    repurposed into a fake crypto test.
+    Crypto and explicitly index-focused posts are eligible for source-rule
+    extraction. Unsupported equities, FX, and code-only ideas are deferred.
     """
     if not 2 <= limit <= 60:
         raise ValueError("source limit must be 2..60")
@@ -294,7 +334,8 @@ async def discover_social_sources(
     eligible = [
         r for r in ordered
         if r.get("platform") != "github"
-        and crypto_relevant(r["title"], r["text"])
+        and (crypto_relevant(r["title"], r["text"])
+             or index_relevant(r["title"], r["text"]))
     ]
     eligible_urls = {item["uri"] for item in eligible}
     deferred = [
@@ -302,7 +343,7 @@ async def discover_social_sources(
          "url": r["uri"], "title": r["title"],
          "reason": (
              "CODE_ONLY_REQUIRES_FROZEN_RULE_MAPPING" if r.get("platform") == "github"
-             else "NO_CRYPTO_MARKET_CONTRACT"
+             else "NO_MATCHING_REVIEWED_MARKET_CONTRACT"
          ),
          "published_at": r["published_at"],
          "code_revision": r.get("source_revision", ""),

@@ -144,7 +144,7 @@ The default and opt-in GitHub Actions synthetic/archival forecasting workflows a
 
 **Limits:** only seven frozen strategy templates; no calibrated forecasting, licensed historical-vintage web service, live API market-data ingestion, automatic strategy-family expansion, or validated holdout outcomes. Free models can be rate limited or retired at any time. Failed model requests and duplicate thesis selections do not consume Warden trials.
 
-## Continuous practitioner research (default since v0.4)
+## Continuous contract-aware practitioner research (v0.5)
 
 **This is the default automated research command. Academic papers are no longer
 used by the continuous intake.** The former academic pipeline is an explicitly
@@ -175,7 +175,7 @@ publisher/repository content and records whether each provider is readable.
 | Priority | Source | Capture method | Research focus |
 | --- | --- | --- | --- |
 | 1 | [Trading Research Hub / pedma](https://www.tradingresearchub.com/) | Custom-domain Substack RSS | Crypto trend/carry/cross-sectional ideas |
-| 2 | [Breakout Trading Academy](https://breakouttradingacademy.com/blog/) | Original WordPress RSS + permitted public article body | Index/CFD intraday breakouts; deferred until an index Warden contract is mapped |
+| 2 | [Breakout Trading Academy](https://breakouttradingacademy.com/blog/) | Original WordPress RSS + permitted public article body | Index breakout ideas may route to approved NQ/ES 5m template only when rules match exactly |
 | 3 | [Robot Wealth](https://robotwealth.com/blog/) | Original WordPress RSS + permitted public article body | Stat arb and economic mechanisms; deferred when non-crypto |
 | 4 | [Quantitativo](https://www.quantitativo.com/) | Custom-domain Substack RSS | Factors and long-short research |
 | 5 | [Quantified Strategies](https://www.quantifiedstrategies.com/) | Official [Substack publication feed](https://quantifiedstrategies.substack.com/) | Mean reversion, seasonality; the main-site RSS currently serves a challenge page |
@@ -188,16 +188,16 @@ Machine, Stoic Research and others are retained without duplicating the
 Quantified Strategies publication. **No X.com connector, token, or fallback is used.**
 
 The campaign writes `runs/social_campaign/source_catalog.json` with a source-by-source
-health report, eligible crypto-strategy URLs and deferred index/equity strategy
-URLs. Freqtrade strategy files are also archived in this deferred catalog with
+health report, eligible crypto **and index** strategy URLs, and deferred unsupported
+markets/code. Freqtrade strategy files are also archived in this deferred catalog with
 `CODE_ONLY_REQUIRES_FROZEN_RULE_MAPPING`; they cannot serve as Warden citations
 until entry/exit logic, direction and timeframe are explicitly mapped to a
 reviewed executable rule. The initial pre-mapping run is preserved in Warden
 as a negative adaptation, not reported as a faithful code replication.
-Run `--sources-only` for a safe refresh without creating another Warden trial. Every 30-minute cycle may discover ideas from all eight providers, but
-**only crypto-compatible hypotheses** can be evaluated on the current eight-asset
-`CRYPTO_PERPS_1H_V2` Warden dataset. Non-crypto strategies are not force-fit
-into crypto and are not silently counted as rejected Stage 1 trials.
+Run `--sources-only` for a safe refresh without creating another Warden trial.
+Each cycle may discover rules from all eight original providers. Eligible entries
+are automatically routed to **frozen, matching Warden market/timeframe contracts**;
+unsupported market and source-rule mismatches are blocked before registry writes.
 
 Each current capture logs the original URL, publication and observation timestamps,
 source-text hash, code provenance, market classification,
@@ -207,18 +207,38 @@ original post said in 2024.** Posts from after the 2025 exploratory validation
 window carry `post_publication_validation=true`; even a Stage 1 PASS remains
 a hypothesis-selection result, not an independent OOS confirmation.
 
-**Research policy:** Seven pre-reviewed causal rule families, selected with
-Laguna S 2.1 (OpenRouter), falling back to North Mini Code. No LLM Python,
-no automatic parameter tuning, no change of strategy family or Warden costs,
-no protected holdout and no live orders. Model outputs must cite concrete
-original publisher or repository URLs and receive a mechanical semantic-support check.
+**Research policy:** Eleven immutable executable profiles cover crypto
+5m/1h/4h/daily, broad crypto 1h and US NQ/ES 5m. Laguna S 2.1 is primary,
+North Mini Code is fallback. A social-source proposal must give **verbatim
+entry and exit quotes from one original post**, explicitly identified market,
+bar timeframe, direction, holding bars, rebalance schedule and source assets.
+The router checks exact quote containment, trigger constants, instrument fit,
+execution-observable requirements and the authorized frozen contract. A generic
+keyword match is insufficient. The LLM cannot write executable Python, tune
+thresholds, alter Warden costs, access holdouts or place orders.
+
+**Available routes:** `CRYPTO_PERPS_1H_V2` (1-8 explicitly sourced majors),
+`CRYPTO_PERPS_TOP100_1H_V1` (88 instruments present on the original 2023-01-01
+inception timestamp; no ex-post survivor selection),
+`CRYPTO_PERPS_5M_V1`, `CRYPTO_PERPS_4H_V1`, `CRYPTO_PERPS_1D_V1`, and
+`INDICES_5M_V1` (NQ/ES US regular trading hours, NY daylight-saving time).
+Each route verifies the immutable SHA-256 against its manifest, expected
+frequency, market, exploration/validation boundary, required columns, OHLC
+integrity and Warden next-bar execution policy. The contract remains the sole
+owner of actual costs and funding. Preflight reports 1x, 2x and 3x modeled
+cost assumptions, explicitly marked **not calibrated to real bid/ask or fills**.
+Sources requiring order-book, bid/ask, open-interest or maker-execution data
+are blocked unless those observables exist. This is not a claim that any
+strategy will be profitable. Existing retrospective sources remain labeled
+`RETROSPECTIVE_DISCOVERY_NOT_INDEPENDENT_OOS` after routing.
 
 A Warden `STAGE_1_PASS` **stops further research** and flags the candidate for
 human scientific review and Stage 2. Scientific limits are 20 distinct Stage 1
 screens per campaign and six source/model cycles per UTC day. Daily limits
 reset, but total attempts remain recorded. If the fixed templates or fresh
 strategy posts are exhausted, the campaign pauses and polls for new source
-material. It never generates infinite near-identical variants to force a pass.
+material. A single fully specified author post is sufficient; only genuinely
+cited sources are consumed rather than discarding an entire five-post batch. It never generates infinite near-identical variants to force a pass.
 Every negative Stage 1 screen is retained in Warden's selection-history ledger;
 re-screening a previously used template/contract is blocked.
 

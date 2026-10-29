@@ -243,8 +243,9 @@ async def test_deferred_equity_ideas_never_become_crypto_warden_candidates(monke
     monkeypatch.setattr(sources, "collect_registry_sources", fake_registry)
     monkeypatch.setattr(sources, "fetch_substack_feed", fake_feed)
     batch = await discover_social_sources(limit=10)
-    assert [entry.facts["source_key"] for entry in batch.eligible] == ["pedma"]
-    assert len(batch.deferred) == 1
-    assert batch.deferred[0]["source"] == "breakout_trading_academy"
-    assert batch.deferred[0]["reason"] == "NO_CRYPTO_MARKET_CONTRACT"
+    assert [entry.facts["source_key"] for entry in batch.eligible] == [
+        "pedma", "breakout_trading_academy",
+    ]
+    assert len(batch.deferred) == 0
+    assert batch.eligible[1].facts["platform"] == "blog"
     assert not any("x.com" in x.uri for x in batch.eligible)
