@@ -1,0 +1,12 @@
+[Unit]
+Description=Poll independent quant X/Substack strategy sources every 30 minutes
+
+[Timer]
+OnActiveSec=10min
+OnUnitInactiveSec=30min
+AccuracySec=1min
+Persistent=true
+Unit=quant-social-research.service
+
+[Install]
+WantedBy=timers.target

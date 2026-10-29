@@ -1,0 +1,16 @@
+[Unit]
+Description=AI Quant Research - bounded X/Substack -> Warden Stage 1 cycle
+Documentation=https://github.com/hzminhzz/AI-research-loop
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/home/quant/dev/AI-research-loop
+ExecStart=/home/quant/anaconda3/bin/python -m src.social_campaign --once --output runs/social_campaign --max-screened 20 --max-daily-cycles 6
+TimeoutStartSec=360
+UMask=0077
+Nice=10
+NoNewPrivileges=true
+StandardOutput=journal
+StandardError=journal

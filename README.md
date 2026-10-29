@@ -144,6 +144,80 @@ The default and opt-in GitHub Actions synthetic/archival forecasting workflows a
 
 **Limits:** only two frozen strategy templates; no calibrated forecasting, licensed historical-vintage web service, live API market-data ingestion, automatic strategy-family expansion, or validated holdout outcomes. Free models can be rate limited or retired at any time. Failed model requests and duplicate thesis selections do not consume Warden trials.
 
+## Continuous social-strategy research (default since v0.3)
+
+**This is the default automated research command. Academic papers are no longer
+used by the continuous intake.** The former academic pipeline is an explicitly
+separate `quant-paper-research` compatibility command and is NOT scheduled.
+
+```bash
+# One immediate cycle (source discovery -> model -> one Warden Stage 1 attempt).
+python -m src.social_campaign --once
+
+# Durable read-only status and recent outcomes.
+python -m src.social_campaign --status
+
+# Interactive continuous loop, 30-minute polling and automatic exit after pass/budget.
+python -m src.social_campaign --loop --interval-seconds 1800
+
+# Emergency stop; status remains persisted and future timer cycles become no-ops.
+python -m src.social_campaign --stop
+python -m src.social_campaign --resume
+```
+
+**Where ideas come from:** Curated RSS posts on Substack publications including
+Delphic Alpha, Empirica Lab, Stoic Research, Quantified Strategies, and Trading
+Time Machine. Filtered for real crypto strategy rules and test claims, never
+academic papers, scraped mirrors, paywalled content or generic social commentary.
+The official X v2 recent-search adapter is available **only if** a valid
+`X_BEARER_TOKEN` is present in the local `.env` or environment. Without it,
+the campaign records `X_AUTH_REQUIRED` and runs Substack-only, rather than
+passing third-party mirrored posts off as first-party evidence.
+
+Substack RSS content can change and X posts can be edited. Each run logs the
+original URL, publication and current observation timestamps, source text hash,
+prompt-injection boundary, model route, selected template, Warden attempt ID, and
+terminal disposition. **These are current captures, not evidence of what an
+original post said in 2024.** Posts from after the 2025 exploratory validation
+window carry `post_publication_validation=true`; even a Stage 1 PASS remains
+a hypothesis-selection result, not an independent OOS confirmation.
+
+**Research policy:** Seven pre-reviewed causal rule families, selected with
+Laguna S 2.1 (OpenRouter), falling back to North Mini Code. No LLM Python,
+no automatic parameter tuning, no change of strategy family or Warden costs,
+no protected holdout and no live orders. Model outputs must cite concrete
+original post URLs and receive a mechanical semantic-support check.
+
+A Warden `STAGE_1_PASS` **stops further research** and flags the candidate for
+human scientific review and Stage 2. Scientific limits are 20 distinct Stage 1
+screens per campaign and six source/model cycles per UTC day. Daily limits
+reset, but total attempts remain recorded. If the fixed templates or fresh
+strategy posts are exhausted, the campaign pauses and polls for new source
+material. It never generates infinite near-identical variants to force a pass.
+Every negative Stage 1 screen is retained in Warden's selection-history ledger;
+re-screening a previously used template/contract is blocked.
+
+A user-level systemd timer template is in `deploy/` and schedules a cycle
+30 minutes after the previous one completed:
+
+```bash
+systemctl --user link "$PWD/deploy/quant-social-research.service"
+systemctl --user link "$PWD/deploy/quant-social-research.timer"
+systemctl --user enable --now quant-social-research.timer
+systemctl --user list-timers quant-social-research.timer
+journalctl --user-unit quant-social-research.service -n 40 --no-pager
+```
+
+Unit files contain no credentials; the Python process reads the ignored `.env`
+locally. Timer activation requires a running user systemd manager/lingering.
+Use `systemctl --user disable --now quant-social-research.timer` to stop scheduling.
+
+**Quantitative caveat:** Repeatedly screening strategies on the same validation
+period inflates false-positive probability. Stop-at-first-pass is just a
+discovery funnel; any passing candidate must be examined with Warden's
+trial-history and deflated Sharpe / untouched OOS controls before making
+economic claims. No guarantee of a passing or profitable strategy is made.
+
 ## GitHub Actions
 
 `.github/workflows/ci.yml`: contract tests, regression tests, synthetic smoke and frozen replay.

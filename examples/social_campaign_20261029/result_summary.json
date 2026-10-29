@@ -1,0 +1,56 @@
+{
+  "campaign": "social_campaign",
+  "as_of_utc": "2026-10-29T11:16:46Z",
+  "run_id": "AIR-OR-20261029-111618",
+  "hypothesis_id": "HYP-AIR-20261029-111618",
+  "attempt_id": "ATT-7a57f17da1b3e44b-001",
+  "selected_model": "cohere/north-mini-code:free",
+  "model_attempts": [
+    {
+      "model": "poolside/laguna-s-2.1:free",
+      "status": "invalid_json"
+    },
+    {
+      "model": "cohere/north-mini-code:free",
+      "status": "ok"
+    }
+  ],
+  "primary_source": {
+    "platform": "substack",
+    "author": "Stoic Research & Technology",
+    "title": "1.4 Cross-Sectional Momentum",
+    "uri": "https://stoicresearch.substack.com/p/14-cross-sectional-momentum",
+    "published_at": "2026-06-16T08:38:29Z",
+    "captured_at": "2026-10-29T11:16:15Z",
+    "source_vintage": "current publication capture, not original historic version"
+  },
+  "source_cadence_issue": {
+    "source": "Cross-sectional momentum, rebalances every 21 days, 20-coin universe",
+    "tested_adaptation": "Long/short top and bottom two coins, eight-asset universe, 168h lookback, rebalances daily",
+    "status": "NOT_FAITHFUL_REPLICATION",
+    "corrective_action": "Subsequent pipeline now rejects explicit source cadence mismatch before Warden registration"
+  },
+  "data": {
+    "contract_id": "CRYPTO_PERPS_1H_V2",
+    "rows": 105024,
+    "instruments": 8,
+    "provenance": "verified_market",
+    "holdout_used": false
+  },
+  "stage0": "REGISTERED",
+  "causal_verify": "PASS",
+  "stage1": {
+    "verdict": "REJECT",
+    "metrics": {
+      "profit_factor": 0.9633328267635793,
+      "bootstrap_p_value": 0.72,
+      "conditional_edge_per_active_hour": -0.000018858945616257967,
+      "time_in_market": 1,
+      "average_holding_bars": 99.17808219178083,
+      "trade_edge": -0.0018703940583795573
+    }
+  },
+  "selection_attempts_added": 1,
+  "full_backtest_trials_used": 0,
+  "reproducibility": "Original signed audit and public RSS evidence pinned under ignored runs/social_campaign/... on the research VPS; avoid Warden re-screen in shared registry."
+}

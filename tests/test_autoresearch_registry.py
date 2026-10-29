@@ -23,4 +23,4 @@ def test_reuse_same_contract_template_is_blocked(tmp_path):
         )
     assert _prior_screened_template(root, "shock_reversal", digest) == "ATT-001"
     assert _prior_screened_template(root, "volume_breakout", digest) is None
-    assert _prior_screened_template(root, "shock_reversal", hashlib.sha256(b"different").hexdigest()) is None
+    assert _prior_screened_template(root, "shock_reversal", hashlib.sha256(b"different").hexdigest()) == "ATT-001"
