@@ -67,10 +67,12 @@ async def test_negative_then_pass_stops_and_reuses_no_sources(tmp_path):
     second = await run_cycle(
         store, lab, model=object(), social_discovery=discover, research_runner=runner,
     )
-    # Only one new source remains, so second cycle should wait instead of reusing posts.
-    assert second["status"] == "WAITING_NEW_VERIFIED_POSTS"
-    assert len(calls) == 1
-    assert second["total_screened"] == 1
+    # A single fresh independently authored strategy is sufficient; the
+    # second cycle can proceed without recycling the consumed first post.
+    assert second["status"] == "STAGE_1_PASS_STOPPED"
+    assert len(calls) == 2
+    assert calls[0] != calls[1]
+    assert second["total_screened"] == 2
 
 
 @pytest.mark.asyncio
@@ -153,8 +155,11 @@ async def test_campaign_persists_ranked_health_and_deferrals_without_spending_tr
     async def discover(**kwargs):
         return batch
 
-    result = await run_cycle(store, lab, model=object(), social_discovery=discover)
-    assert result["status"] == "WAITING_NEW_VERIFIED_POSTS"
+    async def fake_runner(*args, **kwargs):
+        return {"research_id": "catalog-one", "disposition": "ABSTAINED_NO_STAGE_1"}
+    result = await run_cycle(store, lab, model=object(), social_discovery=discover,
+                             research_runner=fake_runner)
+    assert result["status"] == "RESEARCH_CYCLE_COMPLETE"
     assert result["total_screened"] == 0
     assert result["eligible_post_count"] == 1
     assert result["deferred_post_count"] == 1

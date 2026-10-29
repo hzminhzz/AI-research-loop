@@ -8,6 +8,7 @@ import pytest
 from src.autoresearch import ResearchProposal, autonomous_run
 from src.core.models import Evidence, EvidenceKind
 from src.harness.openrouter import ModelAttempt, ModelReply
+from src.workflow.source_fidelity import SourceRule
 
 
 def social_post(source):
@@ -21,7 +22,7 @@ def social_post(source):
         source_version="v1",
         provider="substack_current_public_capture",
         snippet=(
-            f"An original backtested Bitcoin buy the dip trading strategy {source}. "
+            f"An original backtested Bitcoin perpetuals buy the dip trading strategy {source} on 1h bars. "
             "Entry occurs when drawdown reaches 12% from the prior seven-day high; "
             "exit after four hours. Reports results after slippage and costs."
         ),
@@ -49,6 +50,12 @@ def model():
                     ),
                     cited_source_ids=["social_substack_one"],
                     limitations=["A 2026 source is not independent of the 2025 exploratory validation."],
+                    rule=SourceRule(
+                        source_market="crypto_perps", source_timeframe="1h",
+                        side="long", holding_bars=4, target_symbols=["BTCUSDT"],
+                        entry_quote="Entry occurs when drawdown reaches 12% from the prior seven-day high",
+                        exit_quote="exit after four hours",
+                    ),
                 ),
                 selected_model="test-free-provider",
                 attempts=[ModelAttempt("test-free-provider", "ok")]
@@ -93,6 +100,14 @@ def prepare(monkeypatch, tmp_path, *, passed, eligible=True, return_code=None):
             }
         raise AssertionError("Warden must never execute stage 2 / holdout / orders")
     monkeypatch.setattr(app, "_warden_call", fake_warden)
+    monkeypatch.setattr(app, "contract_preflight", lambda *a, **k: {
+        "contract_id": "CRYPTO_PERPS_1H_V2", "data_sha256": "0" * 64,
+        "validation_end": "2025-07-01T00:00:00+00:00",
+        "one_way_modeled_cost_bps": 6.0,
+        "execution_qualification": "MODELED_COSTS_NOT_FILL_CALIBRATED",
+        "next_bar_delay": 1, "ex_ante_symbols": None,
+        "available_symbols": ["BTCUSDT", "ETHUSDT"],
+    })
     return checkout, calls
 
 
@@ -103,7 +118,9 @@ async def test_social_source_single_original_post_can_register_and_screen(monkey
     result = await autonomous_run(
         checkout, tmp_path / "research",
         model=model(),
-        source_bundle=([post], [{"uri": post.uri, "author": "trader-one"}]),
+        source_bundle=([post], [{"uri": post.uri, "author": "trader-one",
+                                "platform": "substack", "post_id": "one",
+                                "title": "Bitcoin buy the dip", "text": post.snippet}]),
     )
     assert result["disposition"] == "STAGE_1_REJECT"
     assert result["source_mode"] == "PRACTITIONER_CURRENT_CAPTURE_NOT_HISTORICAL_VINTAGE"
@@ -118,7 +135,9 @@ async def test_warden_claimed_pass_without_eligible_provenance_is_blocked(monkey
     post = social_post("one")
     result = await autonomous_run(
         checkout, tmp_path / "research", model=model(),
-        source_bundle=([post], [{"uri": post.uri}]),
+        source_bundle=([post], [{"uri": post.uri, "platform": "substack",
+                                "post_id": "one", "title": "Bitcoin buy the dip",
+                                "text": post.snippet}]),
     )
     assert result["disposition"] == "BLOCKED_INCONSISTENT_WARDEN_PASS"
     assert calls == ["check-worktree", "register-hypothesis", "verify", "screen"]

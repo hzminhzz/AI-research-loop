@@ -17,6 +17,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from src.autoresearch import TEMPLATES, _prior_screened_template, autonomous_run
+from src.workflow.contract_router import ROUTES
 from src.harness.openrouter import OpenRouterFallback, load_openrouter_key
 from src.tools.social_sources import DEFAULT_FEEDS, discover_social_sources
 
@@ -133,7 +134,8 @@ class CampaignStore:
         ]
         tmp.write_text(json.dumps({
             "captured_at": _utc(), "source_health": health,
-            "eligible_for_crypto_contract": sample,
+            "eligible_for_supported_contracts": sample,
+            "eligible_for_crypto_contract": sample,  # legacy catalog reader alias
             "deferred_for_other_contracts": deferred, "source_gaps": gaps,
         }, indent=2, ensure_ascii=False) + "\n")
         os.replace(tmp, path)
@@ -154,11 +156,15 @@ class CampaignStore:
             **details,
             "source_gaps": sources.get("source_gaps", details.get("source_gaps", [])),
             "source_health": sources.get("source_health", []),
-            "eligible_post_count": len(sources.get("eligible_for_crypto_contract", [])),
+            "eligible_post_count": len(sources.get("eligible_for_supported_contracts",
+                                                   sources.get("eligible_for_crypto_contract", []))),
             "deferred_post_count": len(sources.get("deferred_for_other_contracts", [])),
             "total_cycles": len(rows),
             "total_screened": sum(r[2] in SCREENED for r in rows),
             "total_passed_stage1": sum(r[2] == "STAGE_1_PASS" for r in rows),
+            "total_rule_fidelity_blockers": sum(r[2] in {
+                "BLOCKED_RULE_FIDELITY", "BLOCKED_SOURCE_UNIVERSE_MISMATCH",
+                "BLOCKED_CONTRACT_OR_EXECUTION"} for r in rows),
             "last_results": [
                 {"run_id": x[0], "date": x[1], "disposition": x[2],
                  "template": x[3], "model": x[4]}
@@ -205,14 +211,17 @@ async def run_cycle(
         elif store.daily_cycles() >= max_daily_cycles:
             state = {"status": "PAUSED_DAILY_QUOTA", "updated_at": _utc()}
         else:
-            # Filter modes through Warden's append-only selection-attempt ledger.
-            # A changed source file is not a new idea if the mode/contract is identical.
+            # Selection history is contract-specific: an old eight-major
+            # attempt cannot preclude a distinctly registered broad-universe
+            # contract, nor does rewriting source code replenish a trial.
             source_code = Path(__file__).parent / "workflow/strategy_templates.py"
             import hashlib
             digest = hashlib.sha256(source_code.read_bytes()).hexdigest()
             excluded = {
                 mode for mode in TEMPLATES
-                if _prior_screened_template(checkout, mode, digest) is not None
+                if _prior_screened_template(
+                    checkout, mode, digest, ROUTES[mode].contract_id
+                ) is not None
             }
             if not (set(TEMPLATES) - excluded):
                 state = {
@@ -231,9 +240,10 @@ async def run_cycle(
                 # Read snippets from distinct, previously unconsumed original posts.
                 fresh = [(src, doc) for src, doc in zip(sources, metadata)
                          if src.source_id not in used]
-                # Five source posts gives useful context while not uploading entire feeds.
+                # A single independently authored, fully specified strategy is
+                # sufficient. Do not block on two unrelated posts.
                 cohort = fresh[:5]
-                if len(cohort) < 2:
+                if len(cohort) < 1:
                     state = {
                         "status": "WAITING_NEW_VERIFIED_POSTS",
                         "updated_at": _utc(), "source_gaps": source_gaps,
@@ -247,9 +257,13 @@ async def run_cycle(
                         model=client, source_bundle=social_bundle, excluded_templates=excluded,
                     )
                     disposition = outcome.get("disposition", "")
-                    # Rate-limit failures are not completed science; allow fresh retry.
-                    used_count = not disposition.startswith(BLOCKED_PREFIXES)
-                    store.record(outcome, [src.source_id for src, _ in cohort],
+                    # Retry transport/auth failures, but do not re-query the
+                    # same permanently unmappable social rule forever.
+                    used_count = disposition not in {"BLOCKED_MODEL", "BLOCKED_STAGE_1_OUTPUT"}
+                    cited = outcome.get("source_ids") or []
+                    observed = [src.source_id for src, _ in cohort]
+                    consumed = [sid for sid in cited if sid in observed]
+                    store.record(outcome, consumed or observed[:1],
                                  count_sources=used_count)
                     state = {
                         "status": (
@@ -259,10 +273,14 @@ async def run_cycle(
                         "updated_at": _utc(), "last_run_id": outcome.get("research_id"),
                         "last_disposition": disposition, "last_template": outcome.get("template_id"),
                         "last_model": outcome.get("model"),
+                        "last_contract_id": outcome.get("contract_id"),
+                        "last_scientific_status": outcome.get("scientific_status"),
+                        "last_block_reason": outcome.get("reason"),
                         "source_gaps": source_gaps,
                         "next_step": (
                             "Manual scientific review; Stage 1 PASS is NOT production qualification"
-                            if disposition == "STAGE_1_PASS" else "Wait for new sources or a new distinct approved strategy"
+                            if disposition == "STAGE_1_PASS" else
+                            "Search next original rule; do not repeat a blocked or screened source"
                         ),
                     }
         store.checkpoint(state)
