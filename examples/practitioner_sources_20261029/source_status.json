@@ -1,0 +1,80 @@
+{
+  "snapshot_date_utc": "2026-10-29",
+  "scan_command": "python -m src.social_campaign --sources-only",
+  "ranked_sources": [
+    {
+      "rank": 1,
+      "name": "pedma",
+      "status": "OK",
+      "records": 3,
+      "method": "RSS"
+    },
+    {
+      "rank": 2,
+      "name": "breakout_trading_academy",
+      "status": "OK",
+      "records": 3,
+      "method": "RSS and public article"
+    },
+    {
+      "rank": 3,
+      "name": "robot_wealth",
+      "status": "OK",
+      "records": 2,
+      "method": "RSS and public article"
+    },
+    {
+      "rank": 4,
+      "name": "quantitativo",
+      "status": "OK",
+      "records": 6,
+      "method": "RSS"
+    },
+    {
+      "rank": 5,
+      "name": "quantified_strategies",
+      "status": "OK",
+      "records": 17,
+      "method": "Official Substack RSS fallback"
+    },
+    {
+      "rank": 6,
+      "name": "freqtrade_strategies",
+      "status": "CODE_ONLY_DEFERRED",
+      "records": 6,
+      "method": "GitHub immutable blob; requires explicit rule mapping"
+    },
+    {
+      "rank": 7,
+      "name": "quantconnect_community",
+      "status": "JS_INDEX_ONLY_NO_ITEMS",
+      "records": 0,
+      "method": "public overview monitored; no verified machine-readable strategy"
+    },
+    {
+      "rank": 8,
+      "name": "alvarez_quant_trading",
+      "status": "OK",
+      "records": 4,
+      "method": "RSS and public article"
+    }
+  ],
+  "crypto_stage1_eligible_posts": 9,
+  "deferred_other_market_or_unmapped_code_posts": 39,
+  "x_ingestion": "removed from active source registry and campaign; prior historical records retained",
+  "quant_lab_contract": "CRYPTO_PERPS_1H_V2 (8 Binance perps, 1h)",
+  "latest_end_to_end": {
+    "run_id": "AIR-OR-20261029-114744",
+    "model": "cohere/north-mini-code:free",
+    "template": "donchian_trend",
+    "stage1": "REJECT",
+    "profit_factor": 1.0129782502948323,
+    "bootstrap_p_value": 0.36,
+    "causal_verify": "PASS",
+    "warden_selection_attempt": "ATT-d8344c98a4cd3bec-001",
+    "full_backtest_trials": 0,
+    "scientific_reclassification": "NOT_A_FAITHFUL_REPLICATION_OF_CITED_FREQTRADE_CANDIDATE",
+    "corrective_gate": "Github code-only source records are deferred, and direct citations cannot authorize Stage 1 without reviewed exact rule mapping."
+  },
+  "production_note": "Live snapshot; site availability and source counts may change. Protected holdout untouched."
+}

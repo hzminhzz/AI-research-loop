@@ -46,7 +46,7 @@ async def test_negative_then_pass_stops_and_reuses_no_sources(tmp_path):
         indices = list(range(1, 7))
         # Already consumed posts are filtered by CampaignStore.
         docs = [{"post_id": str(n)} for n in indices]
-        return [make_evidence(n) for n in indices], docs, ["X_AUTH_REQUIRED"]
+        return [make_evidence(n) for n in indices], docs, []
 
     async def runner(*args, **kwargs):
         idx = len(calls)
@@ -123,3 +123,64 @@ async def test_unavailable_model_does_not_consume_sources(tmp_path):
                              social_discovery=discover, research_runner=runner)
     assert result["total_cycles"] == 1
     assert not store.used_sources()
+
+
+
+@pytest.mark.asyncio
+async def test_campaign_persists_ranked_health_and_deferrals_without_spending_trial(tmp_path):
+    from src.tools.social_sources import SourceDiscovery
+
+    store = CampaignStore(tmp_path / "state")
+    lab = checkout(tmp_path)
+    entry = make_evidence(1)
+    batch = SourceDiscovery(
+        eligible=[entry],
+        metadata=[{"source_key": "pedma", "authenticity": "ORIGINAL_PUBLISHER_RSS_CURRENT_CAPTURE"}],
+        gaps=["SOURCE_LIMITED:quantconnect_community:INDEX_ONLY_JS_RENDERED_NO_VERIFIABLE_PUBLIC_STRATEGY"],
+        deferred=[{
+            "source": "breakout_trading_academy",
+            "url": "https://breakouttradingacademy.com/how-to-build-a-short-opening-gap-strategy/",
+            "title": "Nasdaq gap strategy", "reason": "NO_CRYPTO_MARKET_CONTRACT",
+        }],
+        health=[
+            {"source": "pedma", "status": "OK", "usable_records": 1},
+            {"source": "quantconnect_community",
+             "status": "INDEX_ONLY_JS_RENDERED_NO_VERIFIABLE_PUBLIC_STRATEGY",
+             "usable_records": 0},
+        ],
+    )
+
+    async def discover(**kwargs):
+        return batch
+
+    result = await run_cycle(store, lab, model=object(), social_discovery=discover)
+    assert result["status"] == "WAITING_NEW_VERIFIED_POSTS"
+    assert result["total_screened"] == 0
+    assert result["eligible_post_count"] == 1
+    assert result["deferred_post_count"] == 1
+    assert result["source_health"][1]["source"] == "quantconnect_community"
+    catalog = json.loads((store.root / "source_catalog.json").read_text())
+    assert catalog["deferred_for_other_contracts"][0]["reason"] == "NO_CRYPTO_MARKET_CONTRACT"
+    assert catalog["eligible_for_crypto_contract"][0]["url"] == entry.uri
+
+
+
+@pytest.mark.asyncio
+async def test_source_only_probe_never_calls_warden_or_model(tmp_path):
+    from src.social_campaign import inspect_sources_only
+    from src.tools.social_sources import SourceDiscovery
+
+    store = CampaignStore(tmp_path / "state")
+    async def discover(**kwargs):
+        return SourceDiscovery(
+            eligible=[make_evidence(1)],
+            metadata=[{"source_key": "pedma"}],
+            gaps=[], deferred=[],
+            health=[{"source": "pedma", "status": "OK", "usable_records": 1}],
+        )
+    result = await inspect_sources_only(store, social_discovery=discover)
+    assert result["status"] == "SOURCE_DISCOVERY_ONLY"
+    assert result["eligible_crypto"] == 1
+    assert result["warden_trials_consumed"] == 0
+    assert store.status()["total_cycles"] == 0
+    assert store.status()["total_screened"] == 0

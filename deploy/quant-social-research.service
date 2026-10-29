@@ -1,5 +1,5 @@
 [Unit]
-Description=AI Quant Research - bounded X/Substack -> Warden Stage 1 cycle
+Description=AI Quant Research - ranked practitioner sources to Warden Stage 1
 Documentation=https://github.com/hzminhzz/AI-research-loop
 After=network-online.target
 Wants=network-online.target

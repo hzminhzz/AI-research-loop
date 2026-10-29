@@ -1,4 +1,4 @@
-"""Continuous, budgeted X/Substack research campaign until native Stage 1 PASS.
+"""Continuous, budgeted practitioner-source research campaign until native Stage 1 PASS.
 
 One cycle is safe for cron/systemd. Persistent SQLite tracks every completed cycle;
 a lock prevents overlap, and source IDs are immutable per cycle. Stage 1 PASS means
@@ -11,14 +11,10 @@ import asyncio
 import fcntl
 import json
 import os
-import signal
 import sqlite3
-import time
 from contextlib import contextmanager
 from datetime import datetime, timezone
 from pathlib import Path
-
-from dotenv import dotenv_values
 
 from src.autoresearch import TEMPLATES, _prior_screened_template, autonomous_run
 from src.harness.openrouter import OpenRouterFallback, load_openrouter_key
@@ -126,6 +122,22 @@ class CampaignStore:
                         (source_id, run_id),
                     )
 
+    def record_source_catalog(self, sources, metadata, health, deferred, gaps) -> None:
+        """Persist evidence inventory independent of whether a strategy is selected."""
+        path = self.root / "source_catalog.json"
+        tmp = self.root / f"source_catalog_{os.getpid()}.tmp"
+        sample = [
+            {"id": e.source_id, "url": e.uri,
+             "provider": doc.get("source_key"), "type": doc.get("authenticity")}
+            for e, doc in zip(sources, metadata)
+        ]
+        tmp.write_text(json.dumps({
+            "captured_at": _utc(), "source_health": health,
+            "eligible_for_crypto_contract": sample,
+            "deferred_for_other_contracts": deferred, "source_gaps": gaps,
+        }, indent=2, ensure_ascii=False) + "\n")
+        os.replace(tmp, path)
+
     def checkpoint(self, state: dict) -> None:
         target = self.root / "status.json"
         temp = self.root / f"status_{os.getpid()}.tmp"
@@ -136,8 +148,14 @@ class CampaignStore:
         rows = self.records()
         saved = self.root / "status.json"
         details = json.loads(saved.read_text()) if saved.exists() else {}
+        catalog = self.root / "source_catalog.json"
+        sources = json.loads(catalog.read_text()) if catalog.exists() else {}
         return {
             **details,
+            "source_gaps": sources.get("source_gaps", details.get("source_gaps", [])),
+            "source_health": sources.get("source_health", []),
+            "eligible_post_count": len(sources.get("eligible_for_crypto_contract", [])),
+            "deferred_post_count": len(sources.get("deferred_for_other_contracts", [])),
             "total_cycles": len(rows),
             "total_screened": sum(r[2] in SCREENED for r in rows),
             "total_passed_stage1": sum(r[2] == "STAGE_1_PASS" for r in rows),
@@ -149,12 +167,23 @@ class CampaignStore:
         }
 
 
-def _x_key(env_file: str) -> str | None:
-    return (
-        os.getenv("X_BEARER_TOKEN")
-        or str(dotenv_values(env_file).get("X_BEARER_TOKEN") or "")
-        or None
-    )
+async def inspect_sources_only(
+    store: CampaignStore, *, feeds: tuple[str, ...] = DEFAULT_FEEDS,
+    social_discovery=discover_social_sources,
+) -> dict:
+    """Capture the source catalog without models, Warden, or trial consumption."""
+    with store.locked():
+        discovered = await social_discovery(feeds=feeds, limit=50)
+        sources, metadata, gaps = discovered
+        health = getattr(discovered, "health", [])
+        deferred = getattr(discovered, "deferred", [])
+        store.record_source_catalog(sources, metadata, health, deferred, gaps)
+        return {
+            "status": "SOURCE_DISCOVERY_ONLY",
+            "sources": health, "gaps": gaps,
+            "eligible_crypto": len(sources), "deferred_other_markets": len(deferred),
+            "warden_trials_consumed": 0,
+        }
 
 
 async def run_cycle(
@@ -191,8 +220,12 @@ async def run_cycle(
                     "updated_at": _utc(), "screened_modes": sorted(excluded),
                 }
             else:
-                sources, metadata, source_gaps = await social_discovery(
-                    feeds=feeds, x_bearer=_x_key(env_file), limit=50,
+                discovered = await social_discovery(feeds=feeds, limit=50)
+                sources, metadata, source_gaps = discovered
+                source_health = getattr(discovered, "health", [])
+                deferred = getattr(discovered, "deferred", [])
+                store.record_source_catalog(
+                    sources, metadata, source_health, deferred, source_gaps,
                 )
                 used = store.used_sources()
                 # Read snippets from distinct, previously unconsumed original posts.
@@ -210,7 +243,7 @@ async def run_cycle(
                     client = model or OpenRouterFallback(load_openrouter_key(env_file))
                     social_bundle = ([src for src, _ in cohort], [doc for _, doc in cohort])
                     outcome = await research_runner(
-                        checkout, store.root / "research", query="Original tested trading strategies from X/Substack",
+                        checkout, store.root / "research", query="Original practitioner strategy rules from ranked blogs, Substack and GitHub",
                         model=client, source_bundle=social_bundle, excluded_templates=excluded,
                     )
                     disposition = outcome.get("disposition", "")
@@ -257,6 +290,8 @@ def main() -> None:
     commands.add_argument("--once", action="store_true", help="Execute one campaign cycle")
     commands.add_argument("--loop", action="store_true", help="Poll until Stage 1 pass or budget exhaustion")
     commands.add_argument("--status", action="store_true")
+    commands.add_argument("--sources-only", action="store_true",
+                          help="Refresh source health without LLM or Warden")
     commands.add_argument("--stop", action="store_true")
     commands.add_argument("--resume", action="store_true")
     parser.add_argument("--quant-lab", default=DEFAULT_QUANT_LAB)
@@ -269,6 +304,9 @@ def main() -> None:
     store = CampaignStore(Path(args.output))
     if args.status:
         print(json.dumps(store.status(), indent=2))
+        return
+    if args.sources_only:
+        print(json.dumps(asyncio.run(inspect_sources_only(store)), indent=2))
         return
     if args.stop:
         (store.root / "STOP").touch(exist_ok=True)

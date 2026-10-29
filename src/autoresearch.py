@@ -101,6 +101,13 @@ def verify_social_rule_support(proposal: ResearchProposal, sources) -> None:
     if proposal.template_id == "abstain":
         return
     ledger = {x.source_id: x for x in sources}
+    if any(
+        ledger[x].facts.get("source_authenticity", "").startswith("CODE_ONLY_")
+        for x in proposal.cited_source_ids
+    ):
+        raise ValueError(
+            "unvalidated code examples require explicit rule mapping before Stage 1"
+        )
     phrase = " ".join(ledger[x].snippet.lower() for x in proposal.cited_source_ids)
     if not any(token in phrase for token in SOCIAL_FAMILY_TERMS[proposal.template_id]):
         raise ValueError("cited social post does not substantiate selected template family")
@@ -217,8 +224,9 @@ async def autonomous_run(
     archive = ArchivedCatalog(capture["evidence_path"], capture["evidence_sha256"])
     if len(archive.entries) != len(sources):
         raise ValueError("evidence count drift")
-    audit.append(0, "Capture publicly available research abstracts",
-                 {"provider": "OpenAlex", "query": query},
+    audit.append(0, "Capture publicly available original source records",
+                 {"provider": "practitioner_source_registry" if social_mode else "OpenAlex",
+                  "query": query},
                  {"source_ids": [x.source_id for x in sources],
                   "archive_sha256": archive.sha256})
     selected_sources = [
@@ -238,7 +246,7 @@ async def autonomous_run(
         "research_question": "Select ONE executable, testable crypto perpetual thesis for the eight-symbol 1h contract.",
         "sources": selected_sources, "allowed_templates": available_templates,
         "research_as_of": datetime.now(timezone.utc).isoformat(),
-        "source_kind": "Independent X/Substack strategy posts" if social_mode else "Academic abstracts",
+        "source_kind": "Original practitioner blogs, Substack and GitHub code examples" if social_mode else "Academic abstracts",
         "validation_window": "2025-01-01 to 2025-07-01; protected holdout after this not accessible",
         "policy": "Choose only a listed template; never invent parameters. Match the original post author\u0027s entry/exit concept; never convert an unrelated post into a strategy. If no rule matches, choose abstain. Use concise JSON; cite at least one specific original post URL via source ID; up to two short limitations.",
     }
@@ -272,8 +280,10 @@ async def autonomous_run(
         if social_mode:
             verify_social_rule_support(proposal, sources)
     except ValueError as exc:
+        status = ("BLOCKED_RULE_MAPPING" if "code examples require" in str(exc)
+                  else "BLOCKED_CITATIONS")
         failed = {
-            "research_id": research_id, "disposition": "BLOCKED_CITATIONS",
+            "research_id": research_id, "disposition": status,
             "reason": str(exc)[:300], "model": reply.selected_model,
             "source_count": len(sources), "archive_sha256": archive.sha256,
         }
@@ -285,10 +295,10 @@ async def autonomous_run(
     _write_json(run_dir / "proposal.json", proposal.model_dump(mode="json"))
     _write_json(run_dir / "model_trace.json", {
         "selected_model": reply.selected_model, "attempts": attempts,
-        "source_mode": "SOCIAL_POST_CAPTURE" if social_mode else "OPENALEX_ABSTRACT_CAPTURE",
+        "source_mode": "PRACTITIONER_SOURCE_CAPTURE" if social_mode else "OPENALEX_ABSTRACT_CAPTURE",
         "used_live_llm_api": True,
     })
-    audit.append(1, "Select one reviewable fixed strategy from source abstracts",
+    audit.append(1, "Select one reviewable fixed strategy from cited sources",
                  {"models": [x["model"] for x in attempts]},
                  {"proposal": proposal.model_dump(mode="json"),
                   "selected_model": reply.selected_model,
@@ -300,7 +310,7 @@ async def autonomous_run(
         "archive_sha256": capture["evidence_sha256"],
         "model": reply.selected_model, "model_attempts": attempts,
         "template_id": proposal.template_id,
-        "source_mode": ("X_SUBSTACK_CURRENT_CAPTURE_NOT_HISTORICAL_VINTAGE" if social_mode
+        "source_mode": ("PRACTITIONER_CURRENT_CAPTURE_NOT_HISTORICAL_VINTAGE" if social_mode
                          else "OPENALEX_CURRENT_ABSTRACTS_NOT_HISTORICAL_VINTAGE"),
         "post_publication_validation": bool(social_mode and any(
             x.published_at.year >= 2025 for x in sources)),
@@ -346,7 +356,7 @@ async def autonomous_run(
         contract_id=CONTRACT_ID, strategy_family="rules_ts",
         counterparty_or_friction=proposal.counterparty_or_friction,
         source_provenance=(
-            "Current X/Substack author posts; source version NOT historical, " if social_mode
+            "Original practitioner content / untrusted code; current capture NOT historical, " if social_mode
             else "OpenAlex/Crossref publisher DOI abstracts captured currently; "
         ) + "original URLs: " +
             ", ".join(x.uri for x in sources if x.source_id in proposal.cited_source_ids),

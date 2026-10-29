@@ -127,12 +127,12 @@ python -m src.autoresearch \
   --output runs/autoresearch
 ```
 
-Or use the installed `quant-autoresearch` command. Each invocation:
+Or use the installed `quant-paper-research` compatibility command. Each invocation:
 
 1. Validates Warden worktree integrity and the pinned real-data contract `CRYPTO_PERPS_1H_V2`.
 2. Queries public OpenAlex academic metadata, independently cross-checks DOI publication dates against Crossref, rejects missing abstracts/retractions/post-2024 sources, and captures the current records in a SHA-256 pinned local archive.
 3. Uses `poolside/laguna-s-2.1:free`, falling back to `cohere/north-mini-code:free` on provider errors. Neither supports enforced `response_format`; the fallback uses a **no-execution function-call output channel**, and Pydantic validates both. HTTP 401/403 fail closed.
-4. Generates a structured thesis **only** from two reviewable, pre-frozen executable templates: `shock_reversal` or `volume_breakout`. The LLM cannot generate Python, select parameter grids, lower gates or execute orders. An evidence-insufficient proposal can abstain.
+4. Generates a structured thesis **only** from the seven reviewable, pre-frozen templates in `src/autoresearch.py`. The LLM cannot generate Python, select parameter grids, lower gates or execute orders. An evidence-insufficient proposal can abstain.
 5. Checks Warden's prior selection-attempt registry to suppress a repeat of an already screened template/code/contract combination. Fresh proposals export Warden-native YAML; Warden registers the thesis, verifies prefix-invariance and executes **one** Stage 1 screen.
 6. Stops on Stage 1 pass, reject, abstain, duplicate or any blocker. It never runs Stage 2+, reads holdouts, performs optimization, or changes Warden governance.
 
@@ -142,9 +142,9 @@ A completed real-data run is documented at `examples/autoresearch_live_20261029/
 
 The default and opt-in GitHub Actions synthetic/archival forecasting workflows are unchanged. Autonomous Stage 1 is intentionally **VPS-local only**: an ephemeral GitHub runner does not have the pinned `quant-lab` dataset, append-only Warden registry, or the local `.env` key.
 
-**Limits:** only two frozen strategy templates; no calibrated forecasting, licensed historical-vintage web service, live API market-data ingestion, automatic strategy-family expansion, or validated holdout outcomes. Free models can be rate limited or retired at any time. Failed model requests and duplicate thesis selections do not consume Warden trials.
+**Limits:** only seven frozen strategy templates; no calibrated forecasting, licensed historical-vintage web service, live API market-data ingestion, automatic strategy-family expansion, or validated holdout outcomes. Free models can be rate limited or retired at any time. Failed model requests and duplicate thesis selections do not consume Warden trials.
 
-## Continuous social-strategy research (default since v0.3)
+## Continuous practitioner research (default since v0.4)
 
 **This is the default automated research command. Academic papers are no longer
 used by the continuous intake.** The former academic pipeline is an explicitly
@@ -154,7 +154,10 @@ separate `quant-paper-research` compatibility command and is NOT scheduled.
 # One immediate cycle (source discovery -> model -> one Warden Stage 1 attempt).
 python -m src.social_campaign --once
 
-# Durable read-only status and recent outcomes.
+# Test and catalog all configured sources WITHOUT calling an LLM or Warden.
+python -m src.social_campaign --sources-only
+
+# Durable read-only status, source health and recent outcomes.
 python -m src.social_campaign --status
 
 # Interactive continuous loop, 30-minute polling and automatic exit after pass/budget.
@@ -165,17 +168,39 @@ python -m src.social_campaign --stop
 python -m src.social_campaign --resume
 ```
 
-**Where ideas come from:** Curated RSS posts on Substack publications including
-Delphic Alpha, Empirica Lab, Stoic Research, Quantified Strategies, and Trading
-Time Machine. Filtered for real crypto strategy rules and test claims, never
-academic papers, scraped mirrors, paywalled content or generic social commentary.
-The official X v2 recent-search adapter is available **only if** a valid
-`X_BEARER_TOKEN` is present in the local `.env` or environment. Without it,
-the campaign records `X_AUTH_REQUIRED` and runs Substack-only, rather than
-passing third-party mirrored posts off as first-party evidence.
+**Ranked research sources:** All eight requested providers are explicitly configured
+in `src/tools/source_registry.py`. The source collector retrieves only original
+publisher/repository content and records whether each provider is readable.
 
-Substack RSS content can change and X posts can be edited. Each run logs the
-original URL, publication and current observation timestamps, source text hash,
+| Priority | Source | Capture method | Research focus |
+| --- | --- | --- | --- |
+| 1 | [Trading Research Hub / pedma](https://www.tradingresearchub.com/) | Custom-domain Substack RSS | Crypto trend/carry/cross-sectional ideas |
+| 2 | [Breakout Trading Academy](https://breakouttradingacademy.com/blog/) | Original WordPress RSS + permitted public article body | Index/CFD intraday breakouts; deferred until an index Warden contract is mapped |
+| 3 | [Robot Wealth](https://robotwealth.com/blog/) | Original WordPress RSS + permitted public article body | Stat arb and economic mechanisms; deferred when non-crypto |
+| 4 | [Quantitativo](https://www.quantitativo.com/) | Custom-domain Substack RSS | Factors and long-short research |
+| 5 | [Quantified Strategies](https://www.quantifiedstrategies.com/) | Official [Substack publication feed](https://quantifiedstrategies.substack.com/) | Mean reversion, seasonality; the main-site RSS currently serves a challenge page |
+| 6 | [Freqtrade Strategies](https://github.com/freqtrade/freqtrade-strategies) | GitHub public API, **commit and blob-pinned** Python text | **Deferred** as unmapped code examples; not screened, imported or executed |
+| 7 | [QuantConnect Community Strategies](https://www.quantconnect.com/strategies/) | Official public strategy-directory probe | When the JS directory provides no verifiable public strategy rule, report `INDEX_ONLY_JS_RENDERED_NO_VERIFIABLE_PUBLIC_STRATEGY` and create no fabricated item |
+| 8 | [Alvarez Quant Trading](https://alvarezquanttrading.com/blog/) | Original WordPress RSS + public article body | Equity/ETF mean reversion; deferred until appropriate data and contracts exist |
+
+Existing independent feeds from Delphic Alpha, Empirica Lab, Trading Time
+Machine, Stoic Research and others are retained without duplicating the
+Quantified Strategies publication. **No X.com connector, token, or fallback is used.**
+
+The campaign writes `runs/social_campaign/source_catalog.json` with a source-by-source
+health report, eligible crypto-strategy URLs and deferred index/equity strategy
+URLs. Freqtrade strategy files are also archived in this deferred catalog with
+`CODE_ONLY_REQUIRES_FROZEN_RULE_MAPPING`; they cannot serve as Warden citations
+until entry/exit logic, direction and timeframe are explicitly mapped to a
+reviewed executable rule. The initial pre-mapping run is preserved in Warden
+as a negative adaptation, not reported as a faithful code replication.
+Run `--sources-only` for a safe refresh without creating another Warden trial. Every 30-minute cycle may discover ideas from all eight providers, but
+**only crypto-compatible hypotheses** can be evaluated on the current eight-asset
+`CRYPTO_PERPS_1H_V2` Warden dataset. Non-crypto strategies are not force-fit
+into crypto and are not silently counted as rejected Stage 1 trials.
+
+Each current capture logs the original URL, publication and observation timestamps,
+source-text hash, code provenance, market classification,
 prompt-injection boundary, model route, selected template, Warden attempt ID, and
 terminal disposition. **These are current captures, not evidence of what an
 original post said in 2024.** Posts from after the 2025 exploratory validation
@@ -186,7 +211,7 @@ a hypothesis-selection result, not an independent OOS confirmation.
 Laguna S 2.1 (OpenRouter), falling back to North Mini Code. No LLM Python,
 no automatic parameter tuning, no change of strategy family or Warden costs,
 no protected holdout and no live orders. Model outputs must cite concrete
-original post URLs and receive a mechanical semantic-support check.
+original publisher or repository URLs and receive a mechanical semantic-support check.
 
 A Warden `STAGE_1_PASS` **stops further research** and flags the candidate for
 human scientific review and Stage 2. Scientific limits are 20 distinct Stage 1

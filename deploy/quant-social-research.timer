@@ -1,5 +1,5 @@
 [Unit]
-Description=Poll independent quant X/Substack strategy sources every 30 minutes
+Description=Poll curated practitioner strategy sources every 30 minutes
 
 [Timer]
 OnActiveSec=10min

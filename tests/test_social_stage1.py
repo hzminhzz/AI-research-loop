@@ -106,7 +106,7 @@ async def test_social_source_single_original_post_can_register_and_screen(monkey
         source_bundle=([post], [{"uri": post.uri, "author": "trader-one"}]),
     )
     assert result["disposition"] == "STAGE_1_REJECT"
-    assert result["source_mode"] == "X_SUBSTACK_CURRENT_CAPTURE_NOT_HISTORICAL_VINTAGE"
+    assert result["source_mode"] == "PRACTITIONER_CURRENT_CAPTURE_NOT_HISTORICAL_VINTAGE"
     assert result["post_publication_validation"] is True
     assert calls == ["check-worktree", "register-hypothesis", "verify", "screen"]
     assert "STAGE_1" in json.loads((tmp_path / "research" / result["research_id"] / "result.json").read_text())["disposition"]
@@ -162,3 +162,24 @@ def test_source_cadence_matching_four_hour_dip_is_allowed():
         limitations=["The entry threshold differs and must remain a new adaptation."],
     )
     verify_social_rule_support(proposal, [source])
+
+
+
+def test_unmapped_code_examples_cannot_enter_warden_stage1():
+    from src.autoresearch import verify_social_rule_support
+    record = social_post("github")
+    record.facts["source_authenticity"] = "CODE_ONLY_UNVALIDATED_NO_EXECUTION"
+    record.snippet = (
+        "class TrendRiderStrategy: def populate_entry_trend(self, df): "
+        "return rsi signals. No validated code mapping or Donchian entry."
+    )
+    proposal = ResearchProposal(
+        template_id="rsi2_trend_pullback",
+        mechanism="An oversold indicator could indicate short-term mean reversion.",
+        counterparty_or_friction="Taker fees may overwhelm the expected reversion edge.",
+        rationale="Code contains a generic RSI indicator but lacks equivalent frozen rules.",
+        cited_source_ids=[record.source_id],
+        limitations=["The source uses different entry and exit conditions."],
+    )
+    with pytest.raises(ValueError, match="require explicit rule mapping"):
+        verify_social_rule_support(proposal, [record])

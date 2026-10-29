@@ -1,4 +1,4 @@
-"""Social ingestion: real timestamps, original URLs, anti-paper filtering and auth gating."""
+"""Practitioner sources: original URLs, timestamps, no social-media auth."""
 from __future__ import annotations
 
 import asyncio
@@ -9,7 +9,7 @@ import pytest
 
 from src.tools.social_sources import (
     _utc_pubdate, as_evidence, discover_social_sources,
-    eligible_post, fetch_x_posts, parse_substack_feed,
+    eligible_post, parse_substack_feed,
 )
 
 FEED = "https://example.substack.com/feed"
@@ -74,19 +74,15 @@ def test_future_and_naive_pub_dates_rejected():
 
 
 @pytest.mark.asyncio
-async def test_missing_x_token_does_not_use_mirrors():
-    assert await fetch_x_posts(None, None) == []
-
-
-@pytest.mark.asyncio
-async def test_social_discovery_returns_explicit_x_gap(monkeypatch):
+async def test_custom_substack_feed_discovery_without_other_providers(monkeypatch):
     import src.tools.social_sources as sources
     async def fake_feed(url, client):
         return parse_substack_feed(make_feed("Bitcoin strategy backtest", RULE_TEXT),
                                    FEED, datetime(2026, 10, 29, tzinfo=timezone.utc))
     monkeypatch.setattr(sources, "fetch_substack_feed", fake_feed)
-    rows, metadata, gaps = await discover_social_sources(
-        feeds=(FEED,), x_bearer=None, limit=10
-    )
+    result = await discover_social_sources(feeds=(FEED,), limit=10)
+    rows, metadata, gaps = result
     assert len(rows) == len(metadata) == 1
-    assert "X_AUTH_REQUIRED" in gaps
+    assert gaps == []
+    assert result.health[0]["status"] == "OK"
+    assert result.deferred == []
