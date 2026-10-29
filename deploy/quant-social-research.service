@@ -7,6 +7,7 @@ Wants=network-online.target
 [Service]
 Type=oneshot
 WorkingDirectory=/home/quant/dev/AI-research-loop
+Environment=PATH=/home/quant/.local/bin:/home/quant/anaconda3/bin:/usr/local/bin:/usr/bin:/bin
 ExecStart=/home/quant/anaconda3/bin/python -m src.social_campaign --once --output runs/social_campaign --max-screened 20 --max-daily-cycles 6
 TimeoutStartSec=360
 UMask=0077
