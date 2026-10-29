@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from datetime import datetime, timezone
 from enum import StrEnum
-from typing import Any, Literal
+from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
@@ -12,6 +12,9 @@ def utc(value: datetime) -> datetime:
     if value.tzinfo is None or value.utcoffset() is None:
         raise ValueError("timestamp requires an explicit UTC offset")
     return value.astimezone(timezone.utc)
+
+
+SAFE_ID = r"^[A-Za-z0-9][A-Za-z0-9_-]{0,99}$"
 
 
 class StrictModel(BaseModel):
@@ -34,12 +37,14 @@ class Evidence(StrictModel):
     published_at: datetime
     available_at: datetime  # first version accessible to a real decision maker
     revision_available_at: datetime | None = None
+    archived_at: datetime | None = None  # first archived capture, if available
+    source_version: str | None = Field(default=None, max_length=120)
     snippet: str = Field(min_length=1, max_length=4000)
     provider: str = Field(min_length=1, max_length=120)
     # Structured factual assertions; used to detect conflicting supervisor citations.
     facts: dict[str, str] = Field(default_factory=dict)
 
-    @field_validator("published_at", "available_at", "revision_available_at")
+    @field_validator("published_at", "available_at", "revision_available_at", "archived_at")
     @classmethod
     def utc_datetime(cls, value: datetime | None) -> datetime | None:
         return utc(value) if value is not None else None
@@ -50,6 +55,8 @@ class Evidence(StrictModel):
             raise ValueError("available_at cannot precede published_at")
         if self.revision_available_at and self.revision_available_at < self.available_at:
             raise ValueError("revision_available_at cannot precede available_at")
+        if self.archived_at and self.archived_at < self.available_at:
+            raise ValueError("archived_at cannot precede available_at")
         return self
 
 
@@ -105,10 +112,11 @@ class RunStatus(StrEnum):
     IN_PROGRESS = "IN_PROGRESS"
     COMPLETE = "COMPLETE"
     ABSTAINED = "ABSTAINED"
+    FAILED = "FAILED"
 
 
 class AgentState(StrictModel):
-    run_id: str = Field(min_length=1, max_length=160)
+    run_id: str = Field(pattern=SAFE_ID, max_length=100)
     question: str = Field(min_length=5, max_length=2000)
     as_of_date: datetime
     cutoff_date: datetime
@@ -141,9 +149,16 @@ class SupervisorProposal(StrictModel):
     rationale: str = Field(min_length=1, max_length=3000)
     evidence_citations: list[str] = Field(min_length=2)
 
+    @field_validator("evidence_citations")
+    @classmethod
+    def distinct_sources(cls, value: list[str]) -> list[str]:
+        if len(set(value)) < 2:
+            raise ValueError("supervisor override requires two distinct source IDs")
+        return value
+
 
 class ResearchQuestion(StrictModel):
-    research_id: str = Field(min_length=1)
+    research_id: str = Field(pattern=SAFE_ID, max_length=88)
     question: str = Field(min_length=5)
     cutoff_date: datetime
     base_rate: float = Field(ge=0, le=1, strict=True)

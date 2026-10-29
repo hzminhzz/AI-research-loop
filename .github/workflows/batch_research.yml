@@ -1,4 +1,4 @@
-name: scheduled-research-fixture
+name: batch-research
 on:
   schedule:
     - cron: "17 3 * * 1"
@@ -9,7 +9,8 @@ concurrency:
   group: research-batch
   cancel-in-progress: false
 jobs:
-  batch:
+  synthetic:
+    if: vars.RESEARCH_MODE != 'archive'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -18,12 +19,46 @@ jobs:
         with:
           python-version: "3.12"
       - run: python -m pip install -e .
-      - name: Research demonstration - NOT live research
+      - name: Synthetic CI demonstration - not market research
         run: python -m src.cli --demo --questions examples/questions.json --evidence examples/evidence.json --output runs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: synthetic-research-demo
+          path: runs/
+          if-no-files-found: warn
+          retention-days: 14
+
+  pinned-archive-research:
+    if: vars.RESEARCH_MODE == 'archive'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
+      PIT_ARCHIVE_SHA256: ${{ vars.PIT_ARCHIVE_SHA256 }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install -e .
+      - name: Fail closed unless archive, hash and model key are configured
+        run: |
+          test -s data/archived_evidence.json
+          test -s data/questions.json
+          test -n "$LLM_API_KEY"
+          test -n "$PIT_ARCHIVE_SHA256"
+      - name: Run research from pinned historical capture
+        run: >-
+          python -m src.cli
+          --archive data/archived_evidence.json
+          --archive-sha256 "$PIT_ARCHIVE_SHA256"
+          --questions data/questions.json
+          --output runs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pinned-research-evidence
           path: runs/
           if-no-files-found: warn
           retention-days: 14

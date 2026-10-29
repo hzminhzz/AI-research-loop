@@ -14,7 +14,16 @@ jobs:
           python-version: "3.12"
       - name: Install
         run: python -m pip install -e ".[test]"
-      - name: Contract tests
+      - name: Contract and adversarial regression tests
         run: python -m pytest -q
+      - name: Synthetic batch and repeat-run idempotency
+        run: |
+          python -m src.cli --demo --output runs/ci-smoke
+          python -m src.cli --demo --output runs/ci-smoke
+      - name: Frozen offline replay
+        run: >-
+          python -m src.harness.replay
+          --source-run runs/ci-smoke/synthetic-event-001-w00
+          --output runs/ci-replay
       - name: Compile all
         run: python -m compileall -q src

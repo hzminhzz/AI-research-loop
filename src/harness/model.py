@@ -47,12 +47,24 @@ class OpenAICompatibleModel:
             "response_format": {"type": "json_object"},
         }
         async with httpx.AsyncClient(timeout=35) as client:
-            response = await client.post(
-                f"{self.base_url}/chat/completions",
-                json=payload, headers={"Authorization": f"Bearer {self.api_key}"},
-            )
-            response.raise_for_status()
-            return response.json()["choices"][0]["message"]["content"]
+            for attempt in range(3):
+                try:
+                    response = await client.post(
+                        f"{self.base_url}/chat/completions",
+                        json=payload,
+                        headers={"Authorization": f"Bearer {self.api_key}"},
+                    )
+                    response.raise_for_status()
+                    return response.json()["choices"][0]["message"]["content"]
+                except (httpx.TransportError, httpx.HTTPStatusError) as exc:
+                    retryable = isinstance(exc, httpx.TransportError) or (
+                        isinstance(exc, httpx.HTTPStatusError)
+                        and exc.response.status_code in {429, 502, 503, 504}
+                    )
+                    if not retryable or attempt == 2:
+                        raise
+                    await asyncio.sleep(min(0.2 * 2 ** attempt, 1.0))
+            raise AssertionError("unreachable model retry state")
 
     async def action(self, state: AgentState, feedback: str | None = None) -> str:
         from src.core.models import ReActAction
@@ -65,6 +77,26 @@ class OpenAICompatibleModel:
         return await self._request(
             {"state": state.model_dump(mode="json"), "rationale": rationale},
             AgentForecastArtifact.model_json_schema(), feedback,
+        )
+
+    async def supervisor_queries(self, question, consensus, forecasts, evidence) -> str:
+        from src.multi_agent.supervisor import SupervisorQueries
+        return await self._request(
+            {"question": question.model_dump(mode="json"), "consensus": consensus.__dict__,
+             "forecasts": [f.model_dump(mode="json") for f in forecasts],
+             "evidence": [e.model_dump(mode="json") for e in evidence],
+             "task": "Identify at most two targeted clarifying searches; never bypass cutoff."},
+            SupervisorQueries.model_json_schema(), None,
+        )
+
+    async def supervisor_proposal(self, question, consensus, forecasts, evidence) -> str:
+        from src.multi_agent.supervisor import SupervisorReview
+        return await self._request(
+            {"question": question.model_dump(mode="json"), "consensus": consensus.__dict__,
+             "forecasts": [f.model_dump(mode="json") for f in forecasts],
+             "evidence": [e.model_dump(mode="json") for e in evidence],
+             "task": "Return proposal=null unless two distinct corroborating citations justify override."},
+            SupervisorReview.model_json_schema(), None,
         )
 
 

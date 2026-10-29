@@ -8,10 +8,12 @@ from pathlib import Path
 
 from pydantic import BaseModel, ConfigDict, Field
 
+from src.core.models import SAFE_ID
+
 
 class StrategyThesis(BaseModel):
     model_config = ConfigDict(extra="forbid")
-    thesis_id: str = Field(min_length=1)
+    thesis_id: str = Field(pattern=SAFE_ID, max_length=100)
     market: str = Field(min_length=1)
     mechanism: str = Field(min_length=10)
     universe: list[str] = Field(min_length=1)

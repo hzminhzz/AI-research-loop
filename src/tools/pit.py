@@ -47,9 +47,12 @@ Provider = Callable[[PITRequest], Awaitable[list[dict[str, Any]]]]
 
 class PITGateway:
     """Registered read-only providers; the LLM cannot set/relax its cutoff."""
-    def __init__(self, providers: dict[str, Provider], timeout: float = 15.0):
+    def __init__(self, providers: dict[str, Provider], timeout: float = 15.0,
+                 require_archive: bool = False, source_digest: str | None = None):
         self.providers = dict(providers)
         self.timeout = timeout
+        self.require_archive = require_archive
+        self.source_digest = source_digest
 
     async def execute(self, name: str, args: dict[str, Any], cutoff: datetime) -> list[Evidence]:
         schema: type[BaseModel]
@@ -71,6 +74,8 @@ class PITGateway:
         for row in rows:
             try:
                 evidence = Evidence.model_validate(row)
+                if self.require_archive and (evidence.archived_at is None or not evidence.source_version):
+                    raise PITViolation("archived evidence requires captured timestamp and version")
                 validate_evidence(evidence, cutoff)
             except (ValueError, GateRejected) as exc:
                 raise PITViolation(str(exc)) from exc
