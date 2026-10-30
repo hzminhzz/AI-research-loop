@@ -8,7 +8,7 @@ Wants=network-online.target
 Type=oneshot
 WorkingDirectory=/home/quant/dev/AI-research-loop
 Environment=PATH=/home/quant/.local/bin:/home/quant/anaconda3/bin:/usr/local/bin:/usr/bin:/bin
-ExecStart=/home/quant/anaconda3/bin/python -m src.tools.archive_discovery --output runs/archive_discovery --target 50 --seed-catalog runs/archive_discovery/catalog.json
+ExecStart=/home/quant/anaconda3/bin/python -m src.tools.archive_discovery --output runs/archive_discovery --target 80 --seed-catalog runs/archive_discovery/catalog.json
 NoNewPrivileges=yes
 PrivateTmp=yes
 UMask=0077

@@ -146,11 +146,17 @@ def test_pinned_code_sha1_is_not_misrepresented_as_sha256(tmp_path):
     assert result["total_source_leads"] == 6
 
 
-def test_actual_retained_snapshot_has_50_parseable_sources():
+def test_actual_retained_snapshot_preserves_original_50_sources():
     repo = Path(__file__).resolve().parents[1]
     rows, path = _archive_rows(repo)
     assert path.endswith("shortlist.json")
-    assert len(rows) == 50
+    from src.workflow.archive_queue import BUNDLED_ARCHIVE
+    import json
+    frozen = json.loads((repo / BUNDLED_ARCHIVE).read_text(encoding="utf-8"))
+    assert len(frozen) == 50
+    assert len(rows) >= 50
+    assert len({r["id"] for r in rows}) == len(rows)
+    assert (repo / BUNDLED_ARCHIVE).is_file()
 
 
 @pytest.mark.asyncio
