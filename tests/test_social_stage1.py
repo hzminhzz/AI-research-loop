@@ -77,7 +77,7 @@ def prepare(monkeypatch, tmp_path, *, passed, eligible=True, return_code=None):
     with sqlite3.connect(checkout / "registry/registry.db") as db:
         db.execute(
             "CREATE TABLE selection_attempts("
-            "attempt_id TEXT,contract_id TEXT,stage TEXT,strategy_module TEXT,parameters_json TEXT)"
+            "attempt_id TEXT,hypothesis_id TEXT,contract_id TEXT,stage TEXT,strategy_module TEXT,parameters_json TEXT)"
         )
 
     calls = []

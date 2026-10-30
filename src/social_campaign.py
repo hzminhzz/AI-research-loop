@@ -36,6 +36,26 @@ def _utc() -> str:
     return datetime.now(timezone.utc).isoformat()
 
 
+def native_source_screen_count(quant_lab: Path) -> int:
+    """Count source-backed Stage1 attempts in the authoritative Warden ledger.
+
+    The campaign's private cycles omit directly executed guarded Warden screens.
+    All source-campaign or Research Director hypotheses use HYP-SOC- IDs.
+    A missing ledger is a Warden execution blocker elsewhere; an unreadable
+    or incompatible existing ledger fails closed rather than resetting budget.
+    """
+    registry = quant_lab / "registry" / "registry.db"
+    if not registry.is_file():
+        return 0
+    with sqlite3.connect(f"file:{registry.resolve()}?mode=ro", uri=True) as db:
+        count = db.execute(
+            "SELECT COUNT(*) FROM selection_attempts "
+            "WHERE hypothesis_id GLOB 'HYP-SOC-*' "
+            "AND stage = 'STAGE_1_SIGNAL'"
+        ).fetchone()
+    return int(count[0])
+
+
 class CampaignStore:
     def __init__(self, directory: Path):
         self.root = directory.resolve()
@@ -208,14 +228,19 @@ async def run_cycle(
     if not 1 <= max_screened <= 100 or not 1 <= max_daily_cycles <= 24:
         raise ValueError("invalid scientific/cost budgets")
     with store.locked():
+        # Never replenish the 20-screen lifetime campaign budget by switching
+        # from the scheduled worker to manually guarded native Warden calls.
+        # The max avoids double-counting attempts already in both ledgers.
+        effective_screened = max(store.screened_count(), native_source_screen_count(checkout))
         if (store.root / "STOP").exists():
             state = {"status": "MANUALLY_STOPPED", "updated_at": _utc()}
-        elif store.screened_count() >= max_screened:
+        elif effective_screened >= max_screened:
             # This cap is LIFETIME and is NOT reset by a Stage1 PASS or by
             # changing source IDs. Research can continue READ-ONLY; the native
             # Warden scientific/trial budgets remain authoritative.
             state = {
                 "status": "READONLY_RESEARCH_BUDGET_CAP", "updated_at": _utc(),
+                "effective_lifetime_screened": effective_screened,
                 "next_step": "Review new original archive sources; no further auto screens "
                              "without an explicitly approved campaign budget",
             }
