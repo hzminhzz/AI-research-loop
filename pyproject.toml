@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ai-quant-research-loop"
-version = "0.6.0"
+version = "0.7.0"
 description = "PIT-aware read-only multi-agent research harness"
 requires-python = ">=3.11"
 dependencies = ["pydantic>=2.9,<3", "httpx>=0.27,<1", "python-dotenv>=1.0,<2", "beautifulsoup4>=4.12,<5", "pyarrow>=17,<24", "numpy>=1.26,<3", "PyYAML>=6,<7"]

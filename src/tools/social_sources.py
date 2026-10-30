@@ -1,6 +1,6 @@
 """Curated practitioner strategy intake from original blogs, Substack and GitHub.
 
-No X.com ingestion, external search mirrors, paywall bypass or code execution.
+Public X posts are retrieved only via the verified mdfromx.com read-only API. No X login, private feeds, paywall bypass, or publisher code execution.
 All records are untrusted current captures; market-fit and authenticity labels
 are preserved through evidence/strategy selection.
 """
@@ -244,6 +244,7 @@ def as_evidence(record: dict) -> Evidence:
             "source_priority": str(record.get("source_priority", 100)),
             "author": record["author"], "title": record["title"],
             "source_authenticity": authenticity,
+            "rule_support_candidate": str(record.get("x_rule_candidate", "")),
             "revision": record.get("source_revision", ""),
             "provenance": "Current public capture, historical text vintage unverified",
         },
@@ -298,7 +299,7 @@ async def discover_social_sources(
         raise ValueError("source limit must be 2..60")
     records, health, gaps = [], [], []
     async with httpx.AsyncClient(timeout=35, headers={
-        "User-Agent": "AI-quant-research-loop/0.4 (public academic and practitioner research)",
+        "User-Agent": "AI-quant-research-loop/0.7 (public practitioner posts; no auth)",
         "Accept": "application/rss+xml, application/xml, application/json, text/html;q=0.9",
     }) as client:
         # Custom feeds in tests/one-off probes do not fetch eight other sites.
@@ -334,6 +335,7 @@ async def discover_social_sources(
     eligible = [
         r for r in ordered
         if r.get("platform") != "github"
+        and (r.get("platform") != "x_md" or r.get("x_rule_candidate") is True)
         and (crypto_relevant(r["title"], r["text"])
              or index_relevant(r["title"], r["text"]))
     ]
@@ -343,6 +345,8 @@ async def discover_social_sources(
          "url": r["uri"], "title": r["title"],
          "reason": (
              "CODE_ONLY_REQUIRES_FROZEN_RULE_MAPPING" if r.get("platform") == "github"
+             else "X_POST_NEEDS_SOURCE_RULE_FIDELITY_REVIEW"
+             if r.get("platform") == "x_md"
              else "NO_MATCHING_REVIEWED_MARKET_CONTRACT"
          ),
          "published_at": r["published_at"],
