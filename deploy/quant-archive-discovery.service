@@ -1,0 +1,16 @@
+[Unit]
+Description=Read-only original practitioner strategy archive discovery
+Documentation=https://github.com/hzminhzz/AI-research-loop
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/home/quant/dev/AI-research-loop
+Environment=PATH=/home/quant/.local/bin:/home/quant/anaconda3/bin:/usr/local/bin:/usr/bin:/bin
+ExecStart=/home/quant/anaconda3/bin/python -m src.tools.archive_discovery --output runs/archive_discovery --target 50 --seed-catalog runs/archive_discovery/catalog.json
+NoNewPrivileges=yes
+PrivateTmp=yes
+UMask=0077
+TimeoutStartSec=900
+MemoryMax=1500M
