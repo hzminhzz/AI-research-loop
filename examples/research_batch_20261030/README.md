@@ -61,3 +61,62 @@ Both are **adaptations of original publisher strategies**, not literal futures/E
 - Mark the two above exact hypothesis and source-adaptation tuples as **already screened/rejected**. NEVER silently rerun them on the same Warden validation or relabel them as unseen. Do not backtest failed Stage1.
 - Mine an *independent* source with explicit entry, exit, realistic executable asset and short enough label horizon, preferably a non-price feature available within the verified panel. Recheck latest source text and frozen parameters before starting.
 - Every future candidate begins with source provenance and economic mechanism, then exact contract, prefix causal tests and guard check, then one immutable Stage1 selection attempt. Stage3 only on native pass; do not open protected holdout without user approval.
+
+## Addendum — third independently screened source (2026-10-30 ~08:24Z)
+
+The research loop continued after the initial two rejections. It used
+[BTA's weird NQ genetic breakout](https://breakouttradingacademy.com/weird-nasdaq-algo-strategy/)
+as a **new, distinct source-specific hypothesis** rather than revising either
+previously failed model.
+
+- Hypothesis: `HYP-SOC-BTA-WEIRDNQ-20261030`
+- Source: BTA, May 22 2024, public source capture SHA256
+  `6e919373c1d70ed055ff543d57d77beeb1629b7283012159ff268e01128d4326`.
+  Author selected the complicated 35-open/typical-price breakout level
+  from **thousands of genetic algorithm trials**, not a pre-declared rule.
+- Frozen adaptation: NQ **CFD 30-minute bars**, long signal after a
+  completed-bar high crosses the prior-bar high + abs(prior HLC3 minus
+  highest open of 35 completed bars), 07:00–17:00 Eastern target,
+  flat target 17:30 Eastern. Warden fills NEXT_BAR rather than the
+  author's intrabar futures stop. The author's $1,000 E-mini stop
+  **was not reproduced** and is an explicit severe execution-fidelity limit.
+- New governed derived contract (principal delegated, independently unsigned)
+  `AUTO_INDICES_30M_V1_H24_E24_F5_S10_V1`, original pinned source
+  SHA256 `25f8c39dc245f0fe6070ce3fe3cd4063fd3093f7c951d9ed017f36367f23ff8f`,
+  H24 label/E24 embargo, 0.5bps taker + 1.0bps slippage each side.
+  Original exploration/validation/holdout timestamps unchanged.
+- Nine formula/DST/prefix tests passed.
+- Guarded Warden durable verify job `warden-verify-3bc96aea8bba1743d2`
+  **PASS**, 109,100 NQ observations, prefix_invariance=true, verified_market.
+- Guarded Warden durable screen job `warden-screen-8f681692bda9150bff`
+  **STAGE_1_REJECT**, PF=1.047512403460569 vs threshold 1.15,
+  bootstrap p=0.04 (not multiplicity-adjusted),
+  conditional edge=0.00006091939629, trade edge=0.00082288046,
+  time-in-market=21.3573%, average holding=13.5077 **30-minute bars**
+  (not 13.5 hours). Immutable attempt `ATT-5baffc268b6d26ce-001`.
+- No tuning, full Stage3 backtest, qualification, holdout read or live order.
+  All prior quarantines and dirty quant-lab changes remain untouched.
+
+**Authoritative after this batch:** Warden 140 hypotheses, 71 full trials,
+175 source/trial selection attempts. The prior two source-specific rejections
+are still frozen and a third rejection has been added. This is **not**
+three statistically independent OOS tests: original publication timing and
+source-side massive parameter search must be accounted for.
+
+The live original-source archive and non-scientific review ledger are at
+`runs/archive_discovery/shortlist.json` and
+`runs/social_campaign/archive_progress.json`. Six reviewed source entries
+are deferred with concrete data/execution/rule gaps, leaving 44 archive leads
+to investigate. The hourly ChatGPT Research Director is enabled and does
+not stop at either a rejection or a passing Stage1 signal.
+
+**Next material experiment:** Algomatic
+[3 Down, 3 Up on Nasdaq](https://www.algomatictrading.com/post/3-down-3-up-on-nasdaq)
+publishes the precise CFD daily ProRealTime trading code: 3 bearish daily
+bars, one body ≥70% of its candle's range, enter long; 3 bullish
+daily bars, exit. Source backtest mean holding ≈10 days; existing governed
+`INDICES_1D_V1` has label=5 daily bars. This is **BLOCKED_DATA**, not
+a fabricated rejection: a properly authorized ≥20 daily-bar
+label/embargo and CET-daily time contract is required, and the current
+bounded research factory does not allow derivation from that daily parent.
+Never silently shorten the holding period to five days to fit a gate.
