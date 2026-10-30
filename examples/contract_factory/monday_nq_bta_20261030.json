@@ -1,0 +1,16 @@
+{
+  "parent_contract_id": "INDICES_1H_V2",
+  "research_family": "monday_nq_bollinger_atr",
+  "label_horizon_bars": 24,
+  "expected_holding_bars": 23,
+  "source_url": "https://breakouttradingacademy.com/steal-this-monday-nasdaq-strategy-super-simple/",
+  "source_published_at": "2026-07-16T18:44:44+00:00",
+  "source_captured_at": "2026-10-30T07:25:00+00:00",
+  "source_revision_sha256": "4b60f2ce4f0350e36016bf63f375fcc52bc8ca19649f1a5c9e03fa45944e15b4",
+  "reason_for_new_contract": "Monday NASDAQ breakout may remain invested until 23:00 Chicago after a midnight-to-evening stop trigger; the approved 8-bar label and 2-bar embargo do not cover its possible 23-hour holding horizon. Preserve the original pinned NQ CFD snapshot, validation split and all prior selection attempts.",
+  "min_taker_fee_bps": 0.5,
+  "min_slippage_bps": 1,
+  "requires_quote_data": false,
+  "requires_open_interest": false,
+  "requires_funding": false
+}

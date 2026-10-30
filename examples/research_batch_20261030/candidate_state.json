@@ -1,0 +1,74 @@
+{
+  "schema": "SOURCE_RESEARCH_CHECKPOINT_V1",
+  "captured_at": "2026-10-30T07:40:00+00:00",
+  "registry_snapshot": {
+    "hypotheses": 139,
+    "full_trials": 71,
+    "selection_attempts": 174
+  },
+  "science_policy": {
+    "do_not_rerun_same_candidate": true,
+    "protected_holdout_read": false,
+    "live_orders": false,
+    "source_publication_after_validation_is_not_oos": true
+  },
+  "completed": [
+    {
+      "hypothesis": "HYP-SOC-BTA-NQMON-20261030",
+      "source": "https://breakouttradingacademy.com/steal-this-monday-nasdaq-strategy-super-simple/",
+      "market": "NQ_CFD",
+      "contract": "AUTO_INDICES_1H_V2_H24_E24_F5_S10_V1",
+      "attempt": "ATT-f6e9f68b4805e076-001",
+      "verdict": "STAGE_1_REJECT",
+      "profit_factor": 1.1384176199013911,
+      "bootstrap_p": 0.01,
+      "time_in_market": 0.17106516120255746,
+      "verify": "PASS",
+      "reason": "PF_BELOW_1_15",
+      "status": "FROZEN_REJECTED_DO_NOT_TUNE",
+      "first_party_source_replication": false,
+      "related_warden_selection_prior": 30,
+      "source_parameter_search_approx": 1800
+    },
+    {
+      "hypothesis": "HYP-SOC-QC-TOM-ES-20261030",
+      "source": "https://www.quantconnect.com/research/15377/turn-of-the-month-in-equity-indexes/",
+      "market": "ES_CFD",
+      "contract": "INDICES_1D_V1",
+      "attempt": "ATT-b56aee52fba281bc-001",
+      "verdict": "STAGE_1_REJECT",
+      "profit_factor": 0.9286388123227758,
+      "bootstrap_p": 0.54,
+      "time_in_market": 0.15167095115681234,
+      "verify": "PASS",
+      "reason": "PF_BELOW_1_15_AND_NEGATIVE_EDGE",
+      "status": "FROZEN_REJECTED_DO_NOT_TUNE",
+      "first_party_source_replication": false
+    }
+  ],
+  "deferred": [
+    {
+      "source": "https://empiricalab.substack.com/p/bitcoin-50-day-rule",
+      "status": "BLOCKED_LABEL_HORIZON_AND_VENUE",
+      "details": "BTC spot trend holds 22 days average versus 5 daily-bar crypto perp label; 6 lookbacks tested, PBO 62%"
+    },
+    {
+      "source": "https://quantifiedstrategies.substack.com/p/es-ibs-mean-reversion-strategy-futures",
+      "status": "BLOCKED_INCOMPLETE_AUTHOR_RULES"
+    },
+    {
+      "source": "https://breakouttradingacademy.com/how-to-build-a-short-opening-gap-strategy/",
+      "status": "BLOCKED_SELECTION_BIAS_225_PLUS_THURSDAY_AND_INCOMPLETE_STOP_EXIT"
+    },
+    {
+      "source": "https://ideas.finetiqsystems.com/en/ideas/avwap-ema-flush/",
+      "status": "REQUIRES_ANCHOR_VOLUME_AND_FULL_TRADE_SPEC"
+    }
+  ],
+  "next_actions": [
+    "Find independent source-backed model with exact original entry/exit and Warden-compatible horizon",
+    "Audit 1m event-trigger data-contract feasibility for original breakout stop orders without changing Warden protected evaluator",
+    "Keep source-side published parameter-grid counts in effective DSR selection accounting",
+    "Use guarded Warden writes and durable jobs; do not read holdout"
+  ]
+}
