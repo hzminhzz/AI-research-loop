@@ -8,7 +8,11 @@ Wants=network-online.target
 Type=oneshot
 WorkingDirectory=/home/quant/dev/AI-research-loop
 Environment=PATH=/home/quant/.local/bin:/home/quant/anaconda3/bin:/usr/local/bin:/usr/bin:/bin
-ExecStart=/home/quant/anaconda3/bin/python -m src.social_campaign --once --output runs/social_campaign --max-screened 20 --max-daily-cycles 6
+# Validate real VPS Warden governance; stale historical incidents are scope-limited.
+ExecStartPre=/home/quant/anaconda3/bin/python -m src.workflow.governance_guard --quant-lab /home/quant/dev/quant-lab check
+# Shared writer lock, also required of hourly agent-led Warden commands.
+ExecStart=/usr/bin/flock -E 75 -n /home/quant/dev/quant-lab/registry/warden-writer.lock /home/quant/anaconda3/bin/python -m src.social_campaign --once --output runs/social_campaign --max-screened 20 --max-daily-cycles 6
+SuccessExitStatus=75
 TimeoutStartSec=360
 UMask=0077
 Nice=10

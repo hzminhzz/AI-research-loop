@@ -320,6 +320,73 @@ provider integration and full stage 2/3 retry orchestration require a separate
 sandboxed agent executor and validation before deployment. Do not claim those
 features already run automatically.
 
+## Incident-safe Warden research (2026-10-30)
+
+The actual VPS host (`vmi2637217`, user `quant`) owns the user-level `quant-social-research.timer`.
+A ChatGPT/cloud-local `systemctl` error is **not** evidence this VPS timer is absent.
+Run all host checks through the connected VPS-cloudflare service.
+
+Residual reversal hypothesis `HYP-2026-128` has 159 previously unregistered
+diagnostic cells and a holding/label-horizon mismatch. Full trials
+`RUN-XSRR-001` and `RUN-XSRR-002` have immutable rejected audits and now
+append-only `QUARANTINED` dispositions. They remain counted but are **ineligible**
+for promotion. Missing historical multiplicity has **not** been repaired.
+
+The previous manifest diff consists of exactly two research-only additions for
+`AUTO_CRYPTO_PERPS_TOP100_1H_V1_H24_E24_F45_S20_V1` and its dataset manifest,
+under delegated **unsigned** principal approval. All 84 original protected entries
+match their Git baseline and hashes. This is not independent HMAC attestation.
+
+The timed-out `HYP-2026-126` verify has **no terminal job receipt**. That
+candidate remains individually blocked, not a global research stop. It has
+two historical rejected Stage 1 screens and zero full Warden trials.
+
+Read-only reconciliation:
+
+```bash
+cd /home/quant/dev/AI-research-loop
+python -m src.workflow.governance_guard --quant-lab /home/quant/dev/quant-lab check
+```
+
+The timer uses the same preflight and holds an exclusive cross-agent `flock` on
+`/home/quant/dev/quant-lab/registry/warden-writer.lock` during its run.
+All hourly agent Warden writes must use the typed guard wrapper:
+
+```bash
+python -m src.workflow.governance_guard --quant-lab /home/quant/dev/quant-lab run -- uv run warden status --json
+# For a distinct, preregistered strategy with a new experiment spec:
+python -m src.workflow.governance_guard --quant-lab /home/quant/dev/quant-lab run -- uv run warden screen experiments/active/independent_candidate.yaml --json
+```
+
+The wrapper fails closed for known contaminated or unresolved lineages, unsafe
+spec paths, concurrent lock holders, and mismatched manifest provenance.
+Other independently implemented agents can still bypass this cooperative lock;
+the research director must not do so. For future long verifications, require
+a durable job ID and terminal receipt rather than retrying an unknown timeout.
+Protected holdouts and live orders remain outside this research authority.
+### Durable long-running Warden jobs
+
+Submitting a long verification directly through a short-lived MCP shell can
+lose its exit status. Use an idempotent systemd user job instead:
+
+```bash
+cd /home/quant/dev/AI-research-loop
+python -m src.workflow.durable_jobs submit -- \
+  uv run warden verify experiments/active/new_distinct_candidate.yaml --json
+
+# Submit returns a job ID such as warden-verify-<18hex>.
+python -m src.workflow.durable_jobs poll --job-id warden-verify-<18hex>
+```
+
+The job ID hashes the exact experiment spec, strategy code, approved manifest
+and Warden CLI arguments. A repeated submit returns the prior job without
+re-running it, even if its initial tool response was lost. The service executes
+the governance guard and shared writer lock; a bounded runtime, memory limit
+and terminal receipt are retained in `runs/warden_jobs/`. `UNKNOWN_TERMINAL`
+is a blocker for that ID, never permission to submit a duplicate.
+
+Historically timed-out HYP-2026-126 cannot be retroactively assigned a valid
+job ID. It remains scoped as unresolved until independently reconciled.
 ## GitHub Actions
 
 `.github/workflows/ci.yml`: contract tests, regression tests, synthetic smoke and frozen replay.
