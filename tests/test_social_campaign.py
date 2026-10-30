@@ -31,7 +31,7 @@ def checkout(tmp_path):
     with sqlite3.connect(root / "registry/registry.db") as db:
         db.execute(
             "CREATE TABLE selection_attempts("
-            "attempt_id TEXT, contract_id TEXT, stage TEXT, strategy_module TEXT, parameters_json TEXT)"
+            "attempt_id TEXT, hypothesis_id TEXT, contract_id TEXT, stage TEXT, strategy_module TEXT, parameters_json TEXT)"
         )
     return root
 
@@ -118,6 +118,27 @@ async def test_manually_stopped_and_total_budget(tmp_path):
     result = await run_cycle(store, lab, model=object(), max_screened=1)
     assert result["status"] == "READONLY_RESEARCH_BUDGET_CAP"
     assert result["total_screened"] == 1
+
+
+@pytest.mark.asyncio
+async def test_direct_native_source_screens_count_toward_same_lifetime_cap(tmp_path):
+    """A separate guarded Research Director cannot evade the source timer cap."""
+    store = CampaignStore(tmp_path / "state")
+    lab = checkout(tmp_path)
+    with sqlite3.connect(lab / "registry/registry.db") as db:
+        db.executemany(
+            "INSERT INTO selection_attempts(attempt_id,hypothesis_id,stage) VALUES(?,?,?)",
+            [(f"ATT-direct-{i}", f"HYP-SOC-DIRECT-{i}", "STAGE_1_SIGNAL")
+             for i in range(3)],
+        )
+        # Non-campaign Warden hypotheses must not use the source-campaign cap.
+        db.execute("INSERT INTO selection_attempts(attempt_id,hypothesis_id,stage) "
+                   "VALUES('OTHER','HYP-OTHER-1','STAGE_1_SIGNAL')")
+    result = await run_cycle(store, lab, model=object(), max_screened=3)
+    assert result["status"] == "READONLY_RESEARCH_BUDGET_CAP"
+    assert result["total_screened"] == 0
+    assert result["effective_lifetime_screened"] == 3
+    assert result["total_cycles"] == 0
 
 
 @pytest.mark.asyncio

@@ -169,7 +169,7 @@ async def test_empty_feed_triggers_archive_review_not_global_termination(tmp_pat
     import sqlite3
     with sqlite3.connect(lab / "registry/registry.db") as db:
         db.execute("CREATE TABLE selection_attempts("
-                   "attempt_id TEXT, contract_id TEXT, stage TEXT, "
+                   "attempt_id TEXT, hypothesis_id TEXT, contract_id TEXT, stage TEXT, "
                    "strategy_module TEXT, parameters_json TEXT)")
 
     async def no_new_posts(**kwargs):
