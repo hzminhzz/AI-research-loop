@@ -387,6 +387,68 @@ is a blocker for that ID, never permission to submit a duplicate.
 
 Historically timed-out HYP-2026-126 cannot be retroactively assigned a valid
 job ID. It remains scoped as unresolved until independently reconciled.
+## Practitioner archive discovery (2026-10-30)
+
+The former live source feed saw only three Breakout Trading Academy items.
+The separate archive scout `src/tools/archive_discovery.py` now indexes public
+publisher sitemaps, QuantConnect's 83-card investment-strategy library,
+Finetiq's English idea URLs, and the SHA-pinned Backtrader regression-test
+tree. Quantified Strategies uses its own Substack feed when the main
+WordPress sitemap is unavailable; it does not bypass protection or paywalls.
+
+```bash
+# Safe source-only scan: no Warden or protected holdout use.
+python -m src.tools.archive_discovery --output runs/archive_discovery \
+  --target 50 --seed-catalog runs/archive_discovery/catalog.json
+
+# Compact outputs, sorted by reviewed research fit:
+ls runs/archive_discovery/
+# catalog.json (all URL metadata and 142 briefly extracted leads),
+# shortlist.json (50 diverse source-backed leads), report.md
+```
+
+The validated 2026-10-30 run indexed BTA 521 URLs (137 keyword matches),
+QuantConnect 83 strategy articles, Finetiq 75 English ideas, Backtrader
+1,154 strategy test files, Quantified Strategies 15 public Substack posts,
+Algomatic 59 blog URLs, and Financial Hacker 64 original posts.
+The pilot reviewed 142 public original pages/code identifiers and produced
+50 deduplicated, source-diverse research *leads*. Detailed evidence and
+review priorities are checked in under
+`examples/practitioner_archive_20261030/`.
+
+Safety: only exact allowlisted HTTPS publisher hosts, robots-policy checks,
+strict one-hop first-party QuantConnect article redirects, bounded HTTP
+requests and size limits, no untrusted code execution, no accounts/paywall
+bypass, SHA-pinned GitHub code references and small quoted excerpts rather
+than scraped full-article redistribution. Re-using a previous GitHub index
+is allowed only when its item-level immutable commit and blob SHAs verify.
+Publisher pages are untrusted evidence, never shell or model instructions.
+
+All leads are tagged `DISCOVERY_ONLY_NO_WARDEN_ATTEMPT` and include original
+URL, current capture timestamp, text hash, market/family hints, source rule
+excerpts (or explicit incomplete state), probable data contract and risk
+notes. The classification is intentionally conservative: a source's title
+or regression test is NOT a replicable trading strategy; author claims of
+performance are NOT independent validation. Equity ETF ideas are not
+silently transformed into index CFDs, and source publication dates do not
+prove text availability before 2025 validation.
+
+A separate daily VPS user timer refreshes the discovery queue without
+touching Warden:
+
+```bash
+systemctl --user link "$PWD/deploy/quant-archive-discovery.service"
+systemctl --user link "$PWD/deploy/quant-archive-discovery.timer"
+systemctl --user enable --now quant-archive-discovery.timer
+systemctl --user list-timers --all quant-archive-discovery.timer
+```
+
+The schedule is 02:20 UTC daily with up to 20min randomized jitter,
+with no catch-up burst on installation. The existing 30-minute Warden
+source-screening timer is unchanged. Hourly agent-led research should
+start with `runs/archive_discovery/shortlist.json`, inspect the original
+article for full entry/exit/source-vintage, and then preregister Warden
+experiments only when the source rule and market data are truly sufficient.
 ## GitHub Actions
 
 `.github/workflows/ci.yml`: contract tests, regression tests, synthetic smoke and frozen replay.

@@ -1,0 +1,12 @@
+[Unit]
+Description=Daily original practitioner strategy archive discovery
+Documentation=https://github.com/hzminhzz/AI-research-loop
+
+[Timer]
+OnCalendar=*-*-* 02:20:00 UTC
+Persistent=false
+RandomizedDelaySec=20m
+Unit=quant-archive-discovery.service
+
+[Install]
+WantedBy=timers.target
