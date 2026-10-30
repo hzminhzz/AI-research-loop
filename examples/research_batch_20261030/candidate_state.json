@@ -1,10 +1,10 @@
 {
   "schema": "SOURCE_RESEARCH_CHECKPOINT_V1",
-  "captured_at": "2026-10-30T07:40:00+00:00",
+  "captured_at": "2026-10-30T08:26:00+00:00",
   "registry_snapshot": {
-    "hypotheses": 139,
+    "hypotheses": 140,
     "full_trials": 71,
-    "selection_attempts": 174
+    "selection_attempts": 175
   },
   "science_policy": {
     "do_not_rerun_same_candidate": true,
@@ -44,6 +44,24 @@
       "reason": "PF_BELOW_1_15_AND_NEGATIVE_EDGE",
       "status": "FROZEN_REJECTED_DO_NOT_TUNE",
       "first_party_source_replication": false
+    },
+    {
+      "hypothesis": "HYP-SOC-BTA-WEIRDNQ-20261030",
+      "source": "https://breakouttradingacademy.com/weird-nasdaq-algo-strategy/",
+      "market": "NQ_CFD",
+      "contract": "AUTO_INDICES_30M_V1_H24_E24_F5_S10_V1",
+      "attempt": "ATT-5baffc268b6d26ce-001",
+      "verdict": "STAGE_1_REJECT",
+      "profit_factor": 1.047512403460569,
+      "bootstrap_p": 0.04,
+      "time_in_market": 0.21357333981999513,
+      "avg_holding_half_hour_bars": 13.507692307692308,
+      "verify": "PASS",
+      "reason": "PF_BELOW_1_15",
+      "status": "FROZEN_REJECTED_DO_NOT_TUNE",
+      "first_party_source_replication": false,
+      "original_source_ga_trials": "thousands, unspecified count",
+      "original_futures_stop_omitted": true
     }
   ],
   "deferred": [
@@ -63,9 +81,15 @@
     {
       "source": "https://ideas.finetiqsystems.com/en/ideas/avwap-ema-flush/",
       "status": "REQUIRES_ANCHOR_VOLUME_AND_FULL_TRADE_SPEC"
+    },
+    {
+      "source": "https://www.algomatictrading.com/post/3-down-3-up-on-nasdaq",
+      "status": "BLOCKED_LABEL_HORIZON_FOR_INDEX_DAILY",
+      "details": "Exact source daily US100 CFD reversal rules visible; original mean holding approx 10 daily bars, existing INDICES_1D_V1 label five. Source-truthful longer index daily label needs separate authorized research contract; no fabricated 5-bar exit."
     }
   ],
   "next_actions": [
+    "Test longer-horizon native index daily labels for Algomatic 3-down 3-up under explicit protected-contract governance; first verify source-original CET bar schedule",
     "Find independent source-backed model with exact original entry/exit and Warden-compatible horizon",
     "Audit 1m event-trigger data-contract feasibility for original breakout stop orders without changing Warden protected evaluator",
     "Keep source-side published parameter-grid counts in effective DSR selection accounting",
