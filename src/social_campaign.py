@@ -1,8 +1,10 @@
-"""Continuous, budgeted practitioner-source research campaign until native Stage 1 PASS.
+"""Continuous budgeted practitioner-source campaign; never stop at Stage 1 PASS.
 
-One cycle is safe for cron/systemd. Persistent SQLite tracks every completed cycle;
-a lock prevents overlap, and source IDs are immutable per cycle. Stage 1 PASS means
-'candidate for further tests', NOT approved or qualified trading alpha.
+Each cycle is safe for systemd. Persistent SQLite stores all research outcomes,
+a lock blocks overlap, and archive fallback ensures an exhausted RSS feed does
+not globally terminate research. A passing Stage 1 is only a candidate for
+independent downstream verification, NOT approved or qualified trading alpha.
+Scientific/global budgets and manual STOP still block further Warden screens.
 """
 from __future__ import annotations
 
@@ -20,6 +22,7 @@ from src.autoresearch import TEMPLATES, _prior_screened_template, autonomous_run
 from src.workflow.contract_router import ROUTES
 from src.harness.openrouter import OpenRouterFallback, load_openrouter_key
 from src.tools.social_sources import DEFAULT_FEEDS, discover_social_sources
+from src.workflow.archive_queue import backlog
 
 DEFAULT_QUANT_LAB = "/home/quant/dev/quant-lab"
 DEFAULT_OUTPUT = "runs/social_campaign"
@@ -100,7 +103,8 @@ class CampaignStore:
         today = datetime.now(timezone.utc).date().isoformat()
         return sum(row[1].startswith(today) for row in self.records())
 
-    def stopped_on_pass(self) -> bool:
+    def has_stage1_pass_history(self) -> bool:
+        """Historical outcome only; a PASS does not halt discovery or future cycles."""
         return any(row[2] == "STAGE_1_PASS" for row in self.records())
 
     def record(self, outcome: dict, source_ids: list[str], *, count_sources: bool) -> None:
@@ -154,6 +158,8 @@ class CampaignStore:
         sources = json.loads(catalog.read_text()) if catalog.exists() else {}
         return {
             **details,
+            "archive_backlog": backlog(Path(__file__).resolve().parents[1], self.root,
+                                       limit=6),
             "source_gaps": sources.get("source_gaps", details.get("source_gaps", [])),
             "source_health": sources.get("source_health", []),
             "eligible_post_count": len(sources.get("eligible_for_supported_contracts",
@@ -204,10 +210,15 @@ async def run_cycle(
     with store.locked():
         if (store.root / "STOP").exists():
             state = {"status": "MANUALLY_STOPPED", "updated_at": _utc()}
-        elif store.stopped_on_pass():
-            state = {"status": "STAGE_1_PASS_STOPPED", "updated_at": _utc()}
         elif store.screened_count() >= max_screened:
-            state = {"status": "SCIENTIFIC_BUDGET_EXHAUSTED", "updated_at": _utc()}
+            # This cap is LIFETIME and is NOT reset by a Stage1 PASS or by
+            # changing source IDs. Research can continue READ-ONLY; the native
+            # Warden scientific/trial budgets remain authoritative.
+            state = {
+                "status": "READONLY_RESEARCH_BUDGET_CAP", "updated_at": _utc(),
+                "next_step": "Review new original archive sources; no further auto screens "
+                             "without an explicitly approved campaign budget",
+            }
         elif store.daily_cycles() >= max_daily_cycles:
             state = {"status": "PAUSED_DAILY_QUOTA", "updated_at": _utc()}
         else:
@@ -225,8 +236,11 @@ async def run_cycle(
             }
             if not (set(TEMPLATES) - excluded):
                 state = {
-                    "status": "WAITING_NEW_APPROVED_TEMPLATES",
+                    "status": "ARCHIVE_REVIEW_REQUIRED",
                     "updated_at": _utc(), "screened_modes": sorted(excluded),
+                    "next_step": "All frozen executable templates used. Review next "
+                                 "independent archive leads and create a source-faithful "
+                                 "Warden experiment; do not invent a template mapping.",
                 }
             else:
                 discovered = await social_discovery(feeds=feeds, limit=50)
@@ -245,9 +259,12 @@ async def run_cycle(
                 cohort = fresh[:5]
                 if len(cohort) < 1:
                     state = {
-                        "status": "WAITING_NEW_VERIFIED_POSTS",
+                        "status": "ARCHIVE_REVIEW_REQUIRED",
                         "updated_at": _utc(), "source_gaps": source_gaps,
                         "unseen_eligible_posts": len(cohort),
+                        "next_step": "RSS posts exhausted; continue source-specific "
+                                     "investigation from archive_backlog.next_leads, "
+                                     "not a global stop or a fake Warden attempt.",
                     }
                 else:
                     client = model or OpenRouterFallback(load_openrouter_key(env_file))
@@ -267,7 +284,7 @@ async def run_cycle(
                                  count_sources=used_count)
                     state = {
                         "status": (
-                            "STAGE_1_PASS_STOPPED" if disposition == "STAGE_1_PASS"
+                            "STAGE_1_PASS_RECORDED_CONTINUE" if disposition == "STAGE_1_PASS"
                             else "RESEARCH_CYCLE_COMPLETE"
                         ),
                         "updated_at": _utc(), "last_run_id": outcome.get("research_id"),
@@ -278,9 +295,11 @@ async def run_cycle(
                         "last_block_reason": outcome.get("reason"),
                         "source_gaps": source_gaps,
                         "next_step": (
-                            "Manual scientific review; Stage 1 PASS is NOT production qualification"
+                            "Record candidate for native downstream review under Warden; "
+                            "continue investigating the next DISTINCT source"
                             if disposition == "STAGE_1_PASS" else
-                            "Search next original rule; do not repeat a blocked or screened source"
+                            "Search next independent original rule; do not repeat a rejected "
+                            "or blocked source-template pairing"
                         ),
                     }
         store.checkpoint(state)
@@ -294,10 +313,10 @@ async def run_continuously(store: CampaignStore, checkout: Path, *,
     while True:
         status = await run_cycle(store, checkout, **kwargs)
         print(json.dumps(status, indent=2), flush=True)
-        if status["status"] in {
-            "STAGE_1_PASS_STOPPED", "SCIENTIFIC_BUDGET_EXHAUSTED",
-            "MANUALLY_STOPPED",
-        }:
+        # Only the explicit principal-owned STOP ends the polling service.
+        # A Stage1 PASS, source exhaustion or global screen cap does not end
+        # read-only investigation or next-cycle source discovery.
+        if status["status"] == "MANUALLY_STOPPED":
             return
         await asyncio.sleep(interval_seconds)
 
@@ -306,7 +325,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Bounded continuous social-source Warden research")
     commands = parser.add_mutually_exclusive_group()
     commands.add_argument("--once", action="store_true", help="Execute one campaign cycle")
-    commands.add_argument("--loop", action="store_true", help="Poll until Stage 1 pass or budget exhaustion")
+    commands.add_argument("--loop", action="store_true", help="Continue periodic source research, even after Stage1 PASS")
     commands.add_argument("--status", action="store_true")
     commands.add_argument("--sources-only", action="store_true",
                           help="Refresh source health without LLM or Warden")

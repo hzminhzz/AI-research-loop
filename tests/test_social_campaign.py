@@ -1,4 +1,4 @@
-"""Continuous campaign stops on Stage 1 pass, never reuses consumed posts or trial budgets."""
+"""Continuous campaign records Stage1 successes and keeps reviewing distinct sources."""
 from __future__ import annotations
 
 import json
@@ -37,7 +37,7 @@ def checkout(tmp_path):
 
 
 @pytest.mark.asyncio
-async def test_negative_then_pass_stops_and_reuses_no_sources(tmp_path):
+async def test_negative_then_pass_records_and_reuses_no_sources(tmp_path):
     store = CampaignStore(tmp_path / "state")
     lab = checkout(tmp_path)
     calls, selected = [], []
@@ -69,14 +69,14 @@ async def test_negative_then_pass_stops_and_reuses_no_sources(tmp_path):
     )
     # A single fresh independently authored strategy is sufficient; the
     # second cycle can proceed without recycling the consumed first post.
-    assert second["status"] == "STAGE_1_PASS_STOPPED"
+    assert second["status"] == "STAGE_1_PASS_RECORDED_CONTINUE"
     assert len(calls) == 2
     assert calls[0] != calls[1]
     assert second["total_screened"] == 2
 
 
 @pytest.mark.asyncio
-async def test_successful_stage1_halts_future_cycles(tmp_path):
+async def test_successful_stage1_does_not_halt_future_cycles(tmp_path):
     store = CampaignStore(tmp_path / "state")
     lab = checkout(tmp_path)
     events = []
@@ -84,20 +84,26 @@ async def test_successful_stage1_halts_future_cycles(tmp_path):
         events.append("discover")
         docs = [{"post_id": str(n)} for n in range(5)]
         return [make_evidence(n) for n in range(5)], docs, []
+    attempts = []
     async def runner(*args, **kwargs):
         events.append("research")
+        attempts.append(kwargs["source_bundle"][0][0].source_id)
         return {
-            "research_id": "fake-winner", "disposition": "STAGE_1_PASS",
+            "research_id": f"fake-run-{len(attempts)}",
+            "disposition": "STAGE_1_PASS" if len(attempts) == 1 else "STAGE_1_REJECT",
             "model": "frozen", "template_id": "donchian_trend",
         }
     first = await run_cycle(store, lab, model=object(),
                             social_discovery=discover, research_runner=runner)
-    assert first["status"] == "STAGE_1_PASS_STOPPED"
+    assert first["status"] == "STAGE_1_PASS_RECORDED_CONTINUE"
+    assert store.has_stage1_pass_history()
     second = await run_cycle(store, lab, model=object(),
                              social_discovery=discover, research_runner=runner)
-    assert second["status"] == "STAGE_1_PASS_STOPPED"
-    assert events == ["discover", "research"]
-    assert second["total_screened"] == 1
+    assert second["status"] == "RESEARCH_CYCLE_COMPLETE"
+    assert events == ["discover", "research", "discover", "research"]
+    assert attempts[0] != attempts[1]
+    assert second["total_screened"] == 2
+    assert second["total_passed_stage1"] == 1
 
 
 @pytest.mark.asyncio
@@ -110,7 +116,8 @@ async def test_manually_stopped_and_total_budget(tmp_path):
     (store.root / "STOP").unlink()
     store.record({"research_id": "old", "disposition": "STAGE_1_REJECT"}, ["old"], count_sources=True)
     result = await run_cycle(store, lab, model=object(), max_screened=1)
-    assert result["status"] == "SCIENTIFIC_BUDGET_EXHAUSTED"
+    assert result["status"] == "READONLY_RESEARCH_BUDGET_CAP"
+    assert result["total_screened"] == 1
 
 
 @pytest.mark.asyncio

@@ -160,7 +160,8 @@ python -m src.social_campaign --sources-only
 # Durable read-only status, source health and recent outcomes.
 python -m src.social_campaign --status
 
-# Interactive continuous loop, 30-minute polling and automatic exit after pass/budget.
+# Interactive continuous loop. A Stage1 PASS does not terminate discovery.
+# A campaign screening cap switches to READ-ONLY source review, not more Warden attempts.
 python -m src.social_campaign --loop --interval-seconds 1800
 
 # Emergency stop; status remains persisted and future timer cycles become no-ops.
@@ -235,15 +236,22 @@ are blocked unless those observables exist. This is not a claim that any
 strategy will be profitable. Existing retrospective sources remain labeled
 `RETROSPECTIVE_DISCOVERY_NOT_INDEPENDENT_OOS` after routing.
 
-A Warden `STAGE_1_PASS` **stops further research** and flags the candidate for
-human scientific review and Stage 2. Scientific limits are 20 distinct Stage 1
-screens per campaign and six source/model cycles per UTC day. Daily limits
-reset, but total attempts remain recorded. If the fixed templates or fresh
-strategy posts are exhausted, the campaign pauses and polls for new source
-material. A single fully specified author post is sufficient; only genuinely
-cited sources are consumed rather than discarding an entire five-post batch. It never generates infinite near-identical variants to force a pass.
-Every negative Stage 1 screen is retained in Warden's selection-history ledger;
-re-screening a previously used template/contract is blocked.
+A Warden `STAGE_1_PASS` is **recorded without stopping** the campaign. It is
+ONLY a candidate for further independent scientific review and native Stage 2/3
+qualification, never approval to trade. Another cycle uses distinct source and
+unspent scientific budget. The existing campaign-wide cap of 20 Stage 1 screens
+is **not automatically renewed**, and six model/source cycles per UTC day still
+limit spending. At this hard cap the campaign switches to
+`READONLY_RESEARCH_BUDGET_CAP`: source investigation and the durable archive
+queue remain available, but automated Warden screens require a separately
+approved budget. An empty fresh-post feed or exhausted frozen template set
+produces `ARCHIVE_REVIEW_REQUIRED` rather than final completion. The autonomous
+Research Director then reviews source-specific archive leads and data feasibility
+without disguising missing author rules as executable templates. A single
+fully specified source can still be screened through a matching frozen route;
+only genuinely cited sources are consumed, not a whole five-post batch.
+Every rejected Stage 1 attempt is retained in the Warden registry. Repeating
+an identical tested source-template-contract pairing is prohibited.
 
 A user-level systemd timer template is in `deploy/` and schedules a cycle
 30 minutes after the previous one completed:
@@ -261,10 +269,60 @@ locally. Timer activation requires a running user systemd manager/lingering.
 Use `systemctl --user disable --now quant-social-research.timer` to stop scheduling.
 
 **Quantitative caveat:** Repeatedly screening strategies on the same validation
-period inflates false-positive probability. Stop-at-first-pass is just a
-discovery funnel; any passing candidate must be examined with Warden's
-trial-history and deflated Sharpe / untouched OOS controls before making
-economic claims. No guarantee of a passing or profitable strategy is made.
+period inflates false-positive probability. Continuous discovery is NOT a license
+to search until a lucky p-value appears; all prior source-side searches and
+Warden selection attempts remain counted. Any Stage 1 PASS needs independent
+trial-history, deflated Sharpe, realistic costs, and protected OOS controls
+before an economic claim. No guarantee of a passing or profitable strategy.
+
+### Persistent source-review queue (2026-10-30)
+
+A second problem in the earlier campaign was the false global stop when there
+were no fresh RSS posts. That did not mean the 50-lead public original-publisher
+archive had been exhausted. The native research campaign now **does not terminate
+at Stage 1 PASS** and always reports a read-only, diverse
+`archive_backlog.next_leads` list from the latest valid
+`runs/archive_discovery/shortlist.json`, falling back to the committed
+`examples/practitioner_archive_20261030/shortlist.json`.
+
+The retained shortlist is a complete **50-lead JSON snapshot**, not a
+truncated text representation. The four code-only Backtrader refs are SHA-1
+Git blobs pinned to a Git commit, NOT mislabeled SHA-256 article captures.
+
+```bash
+# Read diverse, not-yet-fully-evaluated research sources.
+python -m src.workflow.archive_queue --limit 8
+
+# After actually investigating an ORIGINAL source, save a review checkpoint.
+# This is NOT a Warden register, screen, backtest or scientific verdict.
+python -m src.workflow.archive_queue \
+  --mark 384d0d71cd9abc581c8b \
+  --review-state BLOCKED_AUTHOR_RULES \
+  --evidence "Publisher never specifies the final exit or time zone"
+
+# Native timed source campaign includes the next queue in every status response.
+python -m src.social_campaign --status
+```
+
+Review checkpoints are append-only in ignored
+`runs/social_campaign/archive_progress.json`. They contain a source ID, the
+observed content fingerprint, a non-scientific status, and a concise evidence
+note. A changed source fingerprint reopens the record without deleting old
+events. A pre-existing Warden rejection from the October 30 batch is shown as
+`already_screened_variant=true` so the same frozen adaptation isn't
+accidentally retried; another genuinely distinct mechanism from that publisher
+is still possible. Archive records cannot claim `STAGE_1_PASS` or reset trial
+budgets; Warden's append-only registry remains authoritative.
+
+The ChatGPT **Autonomous Quant Research Director** is the part that reads these
+original articles, creates new source-specific hypotheses and uses existing
+governance/contract tools where justified. The deterministic campaign by itself
+**does not turn an arbitrary archive excerpt into executable strategy code**.
+The hourly ChatGPT task and the half-hour VPS source poll are independent:
+the scheduled ChatGPT run has a bounded execution window and resumes the
+checkpoint in the next run; the VPS poll is not an infinite LLM process.
+A real contract-governance/writer conflict or scientific budget cap blocks
+mutating Warden work, but safe research and source review continue.
 
 ### Public X-post source via x.md (user-approved, 2026-10-30)
 
