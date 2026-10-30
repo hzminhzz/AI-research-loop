@@ -168,9 +168,9 @@ python -m src.social_campaign --stop
 python -m src.social_campaign --resume
 ```
 
-**Ranked research sources:** All eight requested providers are explicitly configured
-in `src/tools/source_registry.py`. The source collector retrieves only original
-publisher/repository content and records whether each provider is readable.
+**Ranked research sources:** The eight original practitioner sources and a newly
+approved ninth public X-post reader are configured in `src/tools/source_registry.py`.
+The collector records origin, third-party capture provenance, and source health.
 
 | Priority | Source | Capture method | Research focus |
 | --- | --- | --- | --- |
@@ -182,10 +182,12 @@ publisher/repository content and records whether each provider is readable.
 | 6 | [Freqtrade Strategies](https://github.com/freqtrade/freqtrade-strategies) | GitHub public API, **commit and blob-pinned** Python text | **Deferred** as unmapped code examples; not screened, imported or executed |
 | 7 | [QuantConnect Community Strategies](https://www.quantconnect.com/strategies/) | Official public strategy-directory probe | When the JS directory provides no verifiable public strategy rule, report `INDEX_ONLY_JS_RENDERED_NO_VERIFIABLE_PUBLIC_STRATEGY` and create no fabricated item |
 | 8 | [Alvarez Quant Trading](https://alvarezquanttrading.com/blog/) | Original WordPress RSS + public article body | Equity/ETF mean reversion; deferred until appropriate data and contracts exist |
+| 9 | [Public X strategy posts via mdfromx](https://mdfromx.com/docs/posts) | Versioned v1 read-only search + verified public status post, no X API key | Bounded search, source-faithful excerpts, incomplete rules deferred |
 
 Existing independent feeds from Delphic Alpha, Empirica Lab, Trading Time
 Machine, Stoic Research and others are retained without duplicating the
-Quantified Strategies publication. **No X.com connector, token, or fallback is used.**
+Quantified Strategies publication. Public X posts are now user-approved via
+`mdfromx.com`; the old direct X bearer-token integration remains removed.
 
 The campaign writes `runs/social_campaign/source_catalog.json` with a source-by-source
 health report, eligible crypto **and index** strategy URLs, and deferred unsupported
@@ -195,7 +197,8 @@ until entry/exit logic, direction and timeframe are explicitly mapped to a
 reviewed executable rule. The initial pre-mapping run is preserved in Warden
 as a negative adaptation, not reported as a faithful code replication.
 Run `--sources-only` for a safe refresh without creating another Warden trial.
-Each cycle may discover rules from all eight original providers. Eligible entries
+Each cycle may discover rules from all eight original providers plus the public
+X reader. Eligible entries
 are automatically routed to **frozen, matching Warden market/timeframe contracts**;
 unsupported market and source-rule mismatches are blocked before registry writes.
 
@@ -262,6 +265,48 @@ period inflates false-positive probability. Stop-at-first-pass is just a
 discovery funnel; any passing candidate must be examined with Warden's
 trial-history and deflated Sharpe / untouched OOS controls before making
 economic claims. No guarantee of a passing or profitable strategy is made.
+
+### Public X-post source via x.md (user-approved, 2026-10-30)
+
+The ninth ranked source, `x_public_posts`, uses the documented
+[x.md / mdfromx v1 post API](https://mdfromx.com/docs/posts)
+and [v1 search API](https://mdfromx.com/docs/search). Public X content
+is retrieved by the fixed HTTPS host `mdfromx.com`, while evidence retains
+the **original x.com status URL**, author, publication timestamp and separate
+current capture date. No X login, X API bearer token, private account access
+or paywall bypass is used. The hosted third-party service is best-effort and
+rate-limited; it is NOT a guaranteed complete X historical feed.
+
+```bash
+# Verify one exact public permalink; no model, Warden or order execution.
+python -m src.tools.x_md --url \
+  https://x.com/QuantAlphaXXX/status/2109422015572545729
+
+# At most 2 bounded top-feed searches, 8 results each, 4 verified post reads.
+python -m src.tools.x_md --scan
+
+# Include X alongside the original practitioner feeds in source health.
+python -m src.social_campaign --sources-only
+```
+
+The source adapter validates post IDs, handles, dates, API hostname, content
+type, upstream warnings, and origin links. It does not follow arbitrary
+links embedded in tweets, fetch protected posts, or use degraded web-indexed
+snippets as verified results. Invalid or rate-limited responses fail that
+source independently; they do not abort the other eight.
+
+Results are **current third-party captures**, not evidence that the exact
+post text was available before an older backtest period. A post without a
+recognizable numeric entry AND exit rule stays
+`X_POST_NEEDS_SOURCE_RULE_FIDELITY_REVIEW` in the deferred catalog; it is
+never automatically matched to an unrelated Warden template. All ideas still
+require verification against the original post, actual historical market
+data, transaction costs, execution timing, and multiple-testing history.
+No Warden trial is consumed by ingestion alone.
+
+The original archived source set and daily archive scan are unchanged; this
+source runs on the existing bounded practitioner campaign. It is deliberately
+not a general X firehose or a bulk import of user timelines.
 
 ## Autonomous contract creation (v0.6)
 

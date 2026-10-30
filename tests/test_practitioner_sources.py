@@ -63,15 +63,17 @@ class Response:
         return self._payload
 
 
-def test_ranked_eight_are_present_and_no_source_is_social_media():
+def test_original_eight_sources_preserved_and_explicit_x_reader_added():
     assert RANKED_SOURCE_KEYS == (
         "pedma", "breakout_trading_academy", "robot_wealth", "quantitativo",
         "quantified_strategies", "freqtrade_strategies",
-        "quantconnect_community", "alvarez_quant_trading",
+        "quantconnect_community", "alvarez_quant_trading", "x_public_posts",
     )
-    assert [s.rank for s in RANKED_SOURCES] == list(range(1, 9))
-    assert all(s.kind in ("rss", "github", "strategy_index") for s in RANKED_SOURCES)
-    assert not any("x.com" in s.url or "twitter" in s.url for s in RANKED_SOURCES)
+    assert [s.rank for s in RANKED_SOURCES] == list(range(1, 10))
+    assert all(s.kind in ("rss", "github", "strategy_index") for s in RANKED_SOURCES[:8])
+    assert RANKED_SOURCES[8].kind == "x_md"
+    assert RANKED_SOURCES[8].url == "https://mdfromx.com/api/v1/search"
+    assert all("x.com" not in s.url for s in RANKED_SOURCES[:8])
     # Custom-domain RSS is distinct from the original substack.com URLs.
     assert RANKED_SOURCES[0].url.endswith("/feed")
     assert RANKED_SOURCES[4].url == "https://quantifiedstrategies.substack.com/feed"

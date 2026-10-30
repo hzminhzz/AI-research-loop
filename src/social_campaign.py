@@ -253,7 +253,7 @@ async def run_cycle(
                     client = model or OpenRouterFallback(load_openrouter_key(env_file))
                     social_bundle = ([src for src, _ in cohort], [doc for _, doc in cohort])
                     outcome = await research_runner(
-                        checkout, store.root / "research", query="Original practitioner strategy rules from ranked blogs, Substack and GitHub",
+                        checkout, store.root / "research", query="Original practitioner rules from ranked blogs, Substack, public X posts via mdfromx, and GitHub",
                         model=client, source_bundle=social_bundle, excluded_templates=excluded,
                     )
                     disposition = outcome.get("disposition", "")

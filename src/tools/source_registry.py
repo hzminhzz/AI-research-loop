@@ -1,8 +1,8 @@
-"""Curated practitioner research source registry and narrow first-party adapters.
+"""Curated practitioner research sources with explicit provenance boundaries.
 
-Eight ranked user-specified sources plus historical Substack feeds.
-No third-party scrape mirrors, no X APIs, no authentication circumvention.
-Public code is untrusted research text and is NEVER executed.
+Eight original ranked publishers plus newly user-approved public X posts
+read through the third-party mdfromx.com versioned read-only API. No X
+credentials, private posts, bypassing controls or publisher code execution.
 """
 from __future__ import annotations
 
@@ -62,6 +62,9 @@ RANKED_SOURCES = (
     SourceSpec("alvarez_quant_trading", 8, "rss",
                "https://alvarezquanttrading.com/feed/",
                "https://alvarezquanttrading.com/blog/", "blog"),
+    SourceSpec("x_public_posts", 9, "x_md",
+               "https://mdfromx.com/api/v1/search",
+               "https://mdfromx.com/docs/posts", "x_md"),
 )
 
 RANKED_SOURCE_KEYS = tuple(s.key for s in RANKED_SOURCES)
@@ -346,6 +349,9 @@ async def collect_registry_sources(client: httpx.AsyncClient, html_to_text,
                 records, result = await get_github(spec, client)
             elif spec.kind == "strategy_index":
                 records, result = await get_quantconnect(spec, client)
+            elif spec.kind == "x_md":
+                from src.tools.x_md import collect_x_posts
+                records, result = await collect_x_posts(client, eligible_general)
             else:
                 raise ValueError("unknown configured source type")
             health.append({"source": spec.key, "priority": spec.rank, "kind": spec.kind,
