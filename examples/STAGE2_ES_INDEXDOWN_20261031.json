@@ -1,0 +1,224 @@
+{
+  "cash_clock_reconciliation": {
+    "cash_session_unsupported_return_bars": {
+      "avg_return_bps": 6.522757475868072,
+      "bars": 260,
+      "negative_bars": 112,
+      "net_sum_return_fraction": 0.16959169437256988,
+      "positive_bars": 72
+    },
+    "interpretation": "Attribution ONLY on the original frozen Warden executed positions. Removing a weekday posthoc is NOT a new tradable strategy or Warden Stage1 result.",
+    "monday_after_sunday_signal_bars": {
+      "avg_return_bps": 25.51341420927682,
+      "bars": 57,
+      "negative_bars": 21,
+      "net_sum_return_fraction": 0.14542646099287787,
+      "positive_bars": 36
+    },
+    "native_bars_all_timestamped_utc_midnight": true,
+    "native_daily_bars_with_sunday": 129,
+    "non_sunday_open_to_open_bars": {
+      "avg_return_bps": 4.940463640235101,
+      "bars": 649,
+      "negative_bars": 300,
+      "net_sum_return_fraction": 0.32063609025125805,
+      "positive_bars": 165
+    },
+    "original_run_full_net_sum": 0.3475689619868296,
+    "return_contributions_by_group": {
+      "monday": {
+        "avg_return_bps": 10.889986460839562,
+        "bars": 131,
+        "negative_bars": 55,
+        "net_sum_return_fraction": 0.14265882263699825,
+        "positive_bars": 37
+      },
+      "monday_after_sunday_signal": {
+        "avg_return_bps": 25.51341420927682,
+        "bars": 57,
+        "negative_bars": 21,
+        "net_sum_return_fraction": 0.14542646099287787,
+        "positive_bars": 36
+      },
+      "non_sunday": {
+        "avg_return_bps": 4.940463640235101,
+        "bars": 649,
+        "negative_bars": 300,
+        "net_sum_return_fraction": 0.32063609025125805,
+        "positive_bars": 165
+      },
+      "sunday": {
+        "avg_return_bps": 2.0878195143853957,
+        "bars": 129,
+        "negative_bars": 57,
+        "net_sum_return_fraction": 0.026932871735571608,
+        "positive_bars": 35
+      },
+      "sunday_or_monday": {
+        "avg_return_bps": 6.522757475868072,
+        "bars": 260,
+        "negative_bars": 112,
+        "net_sum_return_fraction": 0.16959169437256988,
+        "positive_bars": 72
+      }
+    },
+    "source_cme_globex": "Sunday 18:00 ET-Friday 17:00 ET with daily break (CME official)",
+    "source_nyse_core_session": "Monday-Friday 09:30-16:00 Eastern (NYSE official)",
+    "weekday_map": "0=Monday, 1=Tuesday, ..., 4=Friday, 6=Sunday (Python UTC weekday)",
+    "weekdays_by_return_interval_start": {
+      "0": {
+        "avg_return_bps": 10.889986460839562,
+        "bars": 131,
+        "exposed_bars": 58,
+        "gross_sum_return_fraction": 0.14985882263699823,
+        "negative_bars": 55,
+        "net_sum_return_fraction": 0.14265882263699825,
+        "positive_bars": 37,
+        "red_signal_bars": 50
+      },
+      "1": {
+        "avg_return_bps": 2.9969028318656887,
+        "bars": 130,
+        "exposed_bars": 50,
+        "gross_sum_return_fraction": 0.04555973681425396,
+        "negative_bars": 62,
+        "net_sum_return_fraction": 0.03895973681425396,
+        "positive_bars": 25,
+        "red_signal_bars": 64
+      },
+      "2": {
+        "avg_return_bps": 5.603790856783801,
+        "bars": 130,
+        "exposed_bars": 64,
+        "gross_sum_return_fraction": 0.07924928113818941,
+        "negative_bars": 55,
+        "net_sum_return_fraction": 0.07284928113818942,
+        "positive_bars": 34,
+        "red_signal_bars": 67
+      },
+      "3": {
+        "avg_return_bps": 3.8218121749495926,
+        "bars": 130,
+        "exposed_bars": 67,
+        "gross_sum_return_fraction": 0.05678355827434467,
+        "negative_bars": 67,
+        "net_sum_return_fraction": 0.0496835582743447,
+        "positive_bars": 34,
+        "red_signal_bars": 62
+      },
+      "4": {
+        "avg_return_bps": 1.2878665146462303,
+        "bars": 128,
+        "exposed_bars": 62,
+        "gross_sum_return_fraction": 0.022884691387471734,
+        "negative_bars": 61,
+        "net_sum_return_fraction": 0.01648469138747175,
+        "positive_bars": 35,
+        "red_signal_bars": 55
+      },
+      "6": {
+        "avg_return_bps": 2.0878195143853957,
+        "bars": 129,
+        "exposed_bars": 54,
+        "gross_sum_return_fraction": 0.03363287173557161,
+        "negative_bars": 57,
+        "net_sum_return_fraction": 0.026932871735571608,
+        "positive_bars": 35,
+        "red_signal_bars": 57
+      }
+    }
+  },
+  "identity": {
+    "contract": "INDICES_1D_V1",
+    "data_provenance": "verified_market",
+    "dataset_path": "data/exploratory/indices_1d.parquet",
+    "dataset_sha256": "0e4677355587831849598a1217ab9987b991d9ed8ff0dc2f3369782fad36ba27",
+    "experiment": "experiments/active/bta_index_down_es_cfd_1d_20261031.yaml",
+    "hypothesis_id": "HYP-SOC-BTA-INDEXDOWN-20261031",
+    "module": "strategies/candidates/bta_index_down_es_cfd_1d_20261031.py",
+    "never_read_holdout": true,
+    "registry_connection_created": false,
+    "source_original": "https://breakouttradingacademy.com/big-index-trading-secret-to-get-real-results/",
+    "source_type": "published cash-market tendency; independent CFD daily research adaptation",
+    "validation_last_bar": "2025-06-30T00:00:00+00:00",
+    "validation_start": "2023-01-01T00:00:00+00:00"
+  },
+  "limitation": {
+    "author_vintage": "Captured in 2026; 2022 publication claim not independently authenticated",
+    "broker_fills_and_spread": "Unknown; 1bps/side fixed native cost is NOT measured CFD execution",
+    "full_stage3_scientific_qualification": "Requires Warden native trial and audit with explicit source-selection debt; Stage2 diagnostics alone cannot qualify.",
+    "original_cash_day_reproduction": "NOT supported: 390 of 3111 pinned ES CFD exploratory bars carry Sunday UTC labels; verified_market provenance does not establish NYSE cash-session alignment.",
+    "publisher_prior_tendencies": "Six stated; actual author search count UNKNOWN and not included in native Warden selection history",
+    "session_eligibility_for_source_replication": "BLOCKED: CFD Sunday and UTC-midnight bar definitions not equivalent to NYSE cash close"
+  },
+  "native_read_only_execution": {
+    "1p5x": {
+      "bar_count": 778,
+      "exposure_fraction": 0.45629820051413883,
+      "metrics": {
+        "annualized_turnover": 162.53470437017995,
+        "breakeven_cost_bps": 9.603192128386848,
+        "cvar_99_pct": 0.01635478595352852,
+        "gross_sharpe": 1.1546173963462563,
+        "hit_rate": 0.35368043087971274,
+        "max_drawdown_pct": 12.821591171372956,
+        "net_sharpe": 0.9747096755029143,
+        "profit_factor": 1.333952475781175
+      }
+    },
+    "1x": {
+      "bar_count": 778,
+      "exposure_fraction": 0.45629820051413883,
+      "metrics": {
+        "annualized_turnover": 162.53470437017995,
+        "breakeven_cost_bps": 9.603192128386848,
+        "cvar_99_pct": 0.016337573056059436,
+        "gross_sharpe": 1.1546173963462563,
+        "hit_rate": 0.3590664272890485,
+        "max_drawdown_pct": 12.725525452062506,
+        "net_sharpe": 1.0347080783450047,
+        "profit_factor": 1.3598363108787053
+      }
+    },
+    "2x": {
+      "bar_count": 778,
+      "exposure_fraction": 0.45629820051413883,
+      "metrics": {
+        "annualized_turnover": 162.53470437017995,
+        "breakeven_cost_bps": 9.603192128386848,
+        "cvar_99_pct": 0.01636628595352852,
+        "gross_sharpe": 1.1546173963462563,
+        "hit_rate": 0.35368043087971274,
+        "max_drawdown_pct": 12.917555949940942,
+        "net_sharpe": 0.9146846528897667,
+        "profit_factor": 1.308794432473038
+      }
+    },
+    "lag_plus1": {
+      "bar_count": 778,
+      "exposure_fraction": 0.45629820051413883,
+      "metrics": {
+        "annualized_turnover": 162.53470437017995,
+        "breakeven_cost_bps": -0.9910779866197799,
+        "cvar_99_pct": 0.01865216692542104,
+        "gross_sharpe": -0.1340784826183693,
+        "hit_rate": 0.3303411131059246,
+        "max_drawdown_pct": 25.463432786935027,
+        "net_sharpe": -0.269277779476826,
+        "profit_factor": 0.9305121954252626
+      }
+    }
+  },
+  "outlier_sensitivity": {
+    "fraction_sum_reliant_on_top5pct": 2.116263724406303,
+    "net_sharpe_after_zeroing_best5pct": -1.740999610668109,
+    "top5pct_n_bars": 39
+  },
+  "methodology": {
+    "stage": "STAGE2_READ_ONLY_PRETRIAL",
+    "native": "read-only calls to load_contract, resolve_dataset, Warden next-bar execution and simulate_positions, no registry constructor",
+    "preexisting_stage1_id": "ATT-4f8505fedde82ba2-001",
+    "source_selection_floor": "At least six published tendencies plus eight prior Warden selection attempts, true publisher selection unknown",
+    "invariant": "Never reinterpret Sunday-bar subgroup as tradeable new strategy and never retune binary red-bar rule"
+  }
+}
