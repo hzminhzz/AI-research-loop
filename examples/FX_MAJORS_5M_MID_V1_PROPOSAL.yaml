@@ -1,0 +1,27 @@
+# PROPOSAL ONLY; not activated or added to the protected Warden manifest.
+# Human-approved research price approximation; not verified bid/ask mids.
+# Keep the original FX_MAJORS_5M_V1 quote-side contract immutable.
+contract_id: FX_MAJORS_5M_MID_V1
+asset_class: fx
+frequency: 5m
+bars_per_year: 75240
+exploratory_data_path: data/exploratory/fx_majors_5m.parquet
+holdout_data_path: data/holdout/fx_majors_5m.parquet
+train_start: '2015-01-01T00:00:00Z'
+val_start: '2023-01-01T00:00:00Z'
+val_end: '2025-07-01T00:00:00Z'
+holdout_start: '2025-07-01T00:00:00Z'
+holdout_end: '2026-10-26T00:00:00Z'
+n_folds: 4
+label_horizon_bars: 48
+embargo_bars: 12
+execution_delay_bars: 1
+execution_mode: NEXT_BAR
+# Explicit proxy all-in per side = 0.2 bps commission + estimated
+# 1.3 bps half-spread + 1.5 bps additional slippage. Not broker-calibrated.
+taker_fee_bps: 0.2
+slippage_bps: 2.8
+funding_bps_per_8h: 0.0
+min_expected_move_to_cost_ratio: 2.5
+data_snapshot_sha256: b364e18b03a2c52c4fc2bb8c54834ce992c7dc7ac63b5bef36258fb0f627558b
+data_provenance: verified_market
