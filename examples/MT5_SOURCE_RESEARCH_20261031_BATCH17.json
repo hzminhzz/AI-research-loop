@@ -1,0 +1,119 @@
+{
+  "schema": "MQL5_SOURCE_RESEARCH_BATCH_V1",
+  "batch_id": "MT5-SOURCE-20261031-B17",
+  "recorded_at_utc": "2026-10-31",
+  "scope": "read-only source discovery and preflight",
+  "source_cards": [
+    {
+      "id": "MT5-LFL-LEADLAG",
+      "source_url": "https://www.mql5.com/en/articles/21811",
+      "mechanism": "Low-frequency cross-market lead-lag / cointegration",
+      "status": "EXPERIMENT_BTC_PREFLIGHT_BLOCKED",
+      "preflight": "Fixed BTC->ETH/BNB/SOL/XRP/LTC one-hour lag on train 2023-01-01..2024-06-30; all five lagged correlations negative; no Warden registration."
+    },
+    {
+      "id": "MT5-MR-SWING",
+      "source_url": null,
+      "source_title": "Low-Frequency Quantitative Strategies Part 3 — regime-adaptive mean-reversion swing",
+      "mechanism": "200-day hysteresis regime + Value Chart + DVO + SVAPO",
+      "status": "TOP_NEXT_CONTRACT_REQUIRED",
+      "blocker": "No matching daily US-equities Warden contract/universe and 20-60d label; current multi-asset daily contract contains 17 FX/index/metals instruments and 5d label."
+    },
+    {
+      "id": "MT5-ORB",
+      "source_url": null,
+      "source_title": "Low-Frequency Quantitative Strategies Part 4 — volatility-adjusted momentum / ORB",
+      "mechanism": "Opening range + relative volume + volatility filter",
+      "status": "IGNORE_DUPLICATE_FAMILY",
+      "blocker": "Overlaps prior ORB research and source's universe selection."
+    },
+    {
+      "id": "MT5-FORMULAIC-ALPHAS",
+      "source_url": null,
+      "source_title": "Low-Frequency Quantitative Strategies Part 5 — formulaic alphas",
+      "mechanism": "Cross-sectional IC-first formulaic alpha research",
+      "status": "ADOPT_METHODOLOGY_ONLY",
+      "evidence": "Example Alpha #1 RankIC approximately .0219, t approximately 1.86 on 498 days; below stronger multiple-testing threshold and decays after mid-2025."
+    },
+    {
+      "id": "MT5-FIRST-FRACTAL",
+      "source_url": "https://www.mql5.com/en/articles/23575",
+      "mechanism": "DAX M5 confirmed fractal breakout with ATR stop and 10R target",
+      "status": "BLOCKED_CONTRACT_AND_SELECTION",
+      "blocker": "420 source parameter configurations; 9h45 source session vs 8h Warden label; source expects hedging but Warden netting; selected sample overlaps protected period."
+    },
+    {
+      "id": "MT5-INVERSE-FVG",
+      "source_url": "https://www.mql5.com/en/articles/16659",
+      "mechanism": "Failed fair-value-gap / market-structure reversal",
+      "status": "BLOCKED_SOURCE_CODE_AUDIT",
+      "blocker": "Bullish FVG gap width formula wrong; LastGapIndex mutable shift can duplicate same gap; M3 NQ timeframe and 2020-24 source sample."
+    },
+    {
+      "id": "MT5-WEEKEND-GAP",
+      "source_url": "https://www.mql5.com/en/articles/22993",
+      "mechanism": "Long-closure gap retest and fill",
+      "status": "BLOCKED_LOW_SIGNAL_COUNT",
+      "preflight": "Daily-index adaptation yielded 19 validation signals; no Warden screen."
+    },
+    {
+      "id": "MT5-EURGBP-RSI-HEDGE",
+      "source_url": null,
+      "source_title": "MQL5 forum Simple EUR/GBP RSI Hedge / custom Spreader",
+      "mechanism": "Currency relative strength hedge",
+      "status": "BLOCKED_SOURCE_FIDELITY",
+      "blocker": "Custom indicator formula unpinned; only 32-day anecdotal sample and 5% risk/no stop."
+    },
+    {
+      "id": "MT5-BIGBEN",
+      "source_url": null,
+      "source_title": "MQL5 forum Big Ben / London range breakout",
+      "mechanism": "Session range OCO breakout",
+      "status": "BLOCKED_RULE_COMPLETENESS",
+      "blocker": "Exact range boundaries, stop/target and order lifecycle missing."
+    },
+    {
+      "id": "MT5-CARRY-LIQUIDITY",
+      "source_url": null,
+      "source_title": "MQL5 statistical carry and liquidity heatmap ideas",
+      "mechanism": "Swap/correlation carry; estimated liquidation zones",
+      "status": "BLOCKED_DATA_OR_NO_RULES",
+      "blocker": "No historical swap in approved contract; heatmap is an estimate, not actual liquidation data, and has no complete entry/exit."
+    }
+  ],
+  "preflight_results": {
+    "btc_altcoin_leadlag": {
+      "status": "BLOCKED_DIRECTION",
+      "leader": "BTCUSDT",
+      "followers": [
+        "ETHUSDT",
+        "BNBUSDT",
+        "SOLUSDT",
+        "XRPUSDT",
+        "LTCUSDT"
+      ],
+      "window": "2023-01-01/2024-06-30",
+      "finding": "all five fixed lag-1h BTC-return to follower-return correlations were negative; no positive diffusion-momentum thesis; do not invert"
+    },
+    "weekend_gap_daily_index": {
+      "status": "BLOCKED_SAMPLE",
+      "validation_signals": 19,
+      "contract": "INDICES_1D_V1",
+      "finding": "insufficient signal count for reliable native Stage1"
+    }
+  },
+  "warden": {
+    "hypotheses": 149,
+    "trials": 72,
+    "selection_attempts": 184,
+    "native_source_screens": "13/20",
+    "remaining_at_most": 7,
+    "new_registrations": 0,
+    "causal_verifies": 0,
+    "stage1_screens": 0,
+    "stage3_runs": 0,
+    "holdout_reads": 0,
+    "orders": 0
+  },
+  "next_action": "Verify canonical US equities daily data in ml4t-data and propose (do not sign) a new daily US-equities Warden contract for the MQL5 Part3 swing system; separately assess one fixed NQ->ES lead-lag pair using train-only timestamp-aligned statistics."
+}
