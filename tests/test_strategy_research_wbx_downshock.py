@@ -59,3 +59,18 @@ def test_source_negative_provenance_and_leakage_caveats_present():
     notes = " ".join(d["caveats"])
     for phrase in ("source", "gross", "multiple", "4h", "tick"):
         assert phrase.lower() in notes.lower()
+
+
+def test_next_economic_mechanism_uses_real_new_data_without_activating_contract():
+    note = (ROOT / "examples/STRATEGY_RESEARCH_20261031_NEXT_DATA_READINESS.md").read_text(
+        encoding="utf-8"
+    )
+    assert "taker_buy_base_volume" in note
+    assert "crypto_futures_mark_price_1m_BINANCE_UM_PERP" in note
+    assert "**Mark is NOT cash spot**" in note
+    assert "44,640 actual minute bars" in note
+    assert "744 actual hourly rows" in note
+    assert "a **new, independently approved immutable Warden research contract" in note
+    assert "BLOCKED_PENDING_DATA_QUALITY_AND_CONTRACT_APPROVAL" in note
+    assert "7/20" in note
+    assert "0 new screens, 0 trials, 0 holdout reads" in note
