@@ -1,0 +1,796 @@
+{
+  "schema": "QUANT_THESIS_FACTORY_CONTINUATION_V2",
+  "batch": "20261031-B15",
+  "observed_at_utc": "2026-10-31T07:01:28Z",
+  "task": "Source-grounded research ONLY; no live orders",
+  "source_accounting": {
+    "earlier_batches_read": "B1-B14 (B10-B14 untracked in source checkout preserved, B1-B9 tracked)",
+    "dedupe_rule": "original URL+actual signal mechanism+contract+frozen parameters+historical ledger (no fingerprint-only novelty)",
+    "source_repository_count": 3,
+    "distinct_source_mechanism_cards": 10,
+    "notes": "Three different first-party publishers: Stratmill(1), CShear(6 from one code blob), Gotodataru(3 separate Binance signal files plus backtest selection). Selection families correlated. Ten DIFFERENT economic mechanisms, ZERO Warden trials."
+  },
+  "warden_start": {
+    "hypotheses": 148,
+    "full_trials": 71,
+    "selection_attempts": 183,
+    "native_source_stage1_screens": 12,
+    "private_campaign_screened": 3,
+    "effective_consumed": 12,
+    "cap": 20,
+    "remaining_at_most": 8,
+    "governance": "READY_FOR_DISTINCT_RESEARCH",
+    "worktree_integrity": "PASS"
+  },
+  "warden_end": {
+    "hypotheses": 148,
+    "full_trials": 71,
+    "selection_attempts": 183,
+    "registrations": 0,
+    "verifies": 0,
+    "native_stage1_screens": 0,
+    "passes": 0,
+    "rejections": 0,
+    "blocked_before_registration": 10,
+    "stage3": 0,
+    "holdout_reads": 0,
+    "orders": 0,
+    "source_budget_remaining_at_most": 8,
+    "notes": "No Warden mutations attempted; only read-only preflight for BNB."
+  },
+  "queue": {
+    "approved_archive_cap": 80,
+    "actionable": 0,
+    "deferred": 80,
+    "source_review_events_at_start": 120,
+    "upstream_rss_unseen": 0,
+    "cursor": "Batch15 source-only, advance to new original publisher/verified entry-exit not next code-file variant"
+  },
+  "fx_midpoint_policy": {
+    "principal_approved": true,
+    "active_native_contract": false,
+    "original_protected_contract": "FX_MAJORS_5M_V1 QUOTE_SIDE unchanged",
+    "proposed_only": "FX_MAJORS_5M_MID_V1",
+    "cost_bps_per_side": 3,
+    "anomaly_status": "BLOCKED_SOURCE_QUALITY",
+    "read_only_examples": [
+      "USDCAD 2024-12-22 22:00 UTC open1.43572 vs prior close1.09843 (+30.7% gap)",
+      "AUDUSD 2022-10-09 18:05 UTC +16.9% open gap",
+      "GBPUSD 2022-10-04 21:25 UTC +9.55% open gap"
+    ],
+    "tick_requirement": "Final broker/tick calibration required before trading authorization"
+  },
+  "cards": [
+    {
+      "id": "TH-20261031-B15-CS-BB-KELT-SQUEEZE",
+      "title": "BB-inside-Keltner volatility release breakout",
+      "source": {
+        "kind": "PINNED_GITHUB_FIRST_PARTY_CODE",
+        "original_repository": "https://github.com/CShear/crack-the-nut",
+        "commit": "72f293c19a61e01507f322595e3982da00f0932d",
+        "blob_sha1": "2db11b6b32cd24909b8c3f76baa5c8a503a3be4b",
+        "captured_at_utc": "2026-10-31T07:01:28Z",
+        "author_commit_date_utc": "2026-04-03T17:47:03Z",
+        "captured_via": "GitHub connector fetch_file exact 40-character Git commit",
+        "historical_source_vintage_confirmed": false,
+        "trust": "Untrusted research evidence; publisher code not executed",
+        "original_url": "https://github.com/CShear/crack-the-nut/blob/72f293c19a61e01507f322595e3982da00f0932d/analog/strategies.py#L577-L625",
+        "function_lines": "L577-L625"
+      },
+      "independent_mechanism": "BB-inside-Keltner volatility release breakout",
+      "economic_rationale": "Volatility clustering creates short directional acceleration after compressed trading range releases.",
+      "counterparty": "Liquidity suppliers forced to reprice; traders reposition after volatility regime transition.",
+      "original_market": "Hyperliquid crypto perp 4h analog forward-return evaluator; instrument often BTC primary with listed secondary assets and funding as noted",
+      "proposed_market": "Binance USD-M BTCUSDT 1h if independently authorized; possible 4h original-cadence alternative must use existing approved matching contract",
+      "raw_data": {
+        "status": "EXPLORATORY_MARKET_DATA_PRESENT_FEATURE_CONTRACT_UNRESOLVED",
+        "contract": "AUTO_CRYPTO_PERPS_TOP100_1H_V1_H24_E24_F45_S20_V1 (possible adaptation, not source-faithful approval)",
+        "instrument": "BTCUSDT, plus secondary/funding inputs where required",
+        "rows_btc": 21888,
+        "expected_frequency": "1h target versus original 4h",
+        "holdout": "UNOPENED"
+      },
+      "original_source_rules": {
+        "closed_bar_signal": "BB20 2σ entirely inside Keltner20 1.5× ATR on prior source 4h bar, squeeze ends this completed bar; close above BB center long, else short.",
+        "entry": "Next open after first completed squeeze-release bar; no intrabar stop in original evaluator.",
+        "exit": "Source computes forward_return with external fwd_hours; proposed 4h time exit is novel adaptation.",
+        "sizing": "One unit directional notional, no stop or volatility-target specified.",
+        "holding_label": "Prior/current 4h squeeze transition; proposed fixed 4h/one source bar exit, if caller selected that exit; check prior source configs.",
+        "session_timezone": "UTC around 4h source bars; settlement requires separate venue clock verification"
+      },
+      "proposed_adaptation": {
+        "status": "UNIMPLEMENTED_NOT_SCREENABLE",
+        "signal": "Must retain source rule thresholds while converting chronological duration/cadence explicitly, without optimizing from Warden validation",
+        "entry": "Proposed NEXT_BAR execution after last closed bar, NEVER source same-close prediction",
+        "exit": "Proposed fixed 4h or 8h timeout per field above; source does NOT independently freeze fwd_hours or exit, so this is a newly proposed adaptation, not a claimed original rule.",
+        "sizing": "Bound by current native Warden limits; author-specific leverage may differ",
+        "horizon": "4h or 8h proposal only; needs chosen fixed fwd_hours under source rules",
+        "time_zone": "UTC",
+        "difference_from_source": "Hyperliquid 4h evaluator -> Binance USD-M 1h next-open portfolio return with explicit native costs; source's missing position lifecycle and external evaluation horizon make scientific preflight BLOCKED."
+      },
+      "cost_model": {
+        "model": "approved existing crypto 1h contract only; for PROPOSED adaptation",
+        "taker_bps_side": 4.5,
+        "slippage_bps_side": 2,
+        "estimated_round_trip_bps": 13,
+        "funding": "native 8h funding adjustment if available and point-in-time; no synthetic rates",
+        "broker_execution": "NOT VERIFIED"
+      },
+      "baseline": "Unconditional breakout after BB signal, plus no-squeeze same-day direction comparator. Flat/cash plus unconditioned BTCUSDT equal-time directional exposure at same notional, holding horizon, and Warden costs; additional simple predeclared signal baseline if activated.",
+      "falsification": "If activated after preregistration, native Warden rules_ts must meet PF >=1.15, time-in-market >=5%, block bootstrap p<0.05 and native conditional return/cost edge; reject on any gate failure and freeze. Cost stress at 2x and +1 bar later. This is a predeclared protocol, not an observed verdict.",
+      "source_selection_history": "First-party README advertises 63 evaluated strategies over 13 Hyperliquid assets, optimization, walk-forward selection, and 138 profitable combinations; no independent adjustment demonstrated for this source selection. All share this publisher-side search family, not 9 independent untouched OOS examples.",
+      "pit_controls": [
+        "Use only completed bars at decision timestamp; compare with data available no later than that timestamp.",
+        "Warden supplies one-bar NEXT_BAR execution delay; never manually prelag or use same-bar close fills.",
+        "Use training-fold-only estimates and causal prefix-invariance; preserve validation and sealed holdout boundaries.",
+        "Account for all 63 documented published strategies and 13 asset variants in selection multiplicity; avoid independent-alpha claims."
+      ],
+      "preflight": {
+        "status": "BLOCKED_UNFROZEN_EXIT_AND_CROSS_VENUE",
+        "details": "Source code computes forward_return(ts,fwd_hours), fwd_hours is passed externally; no timestamped entry->exit trade ledger. Venue/frequency adaptation and cost floors would change measured outcomes. Do not interpret callables as ready-to-execute strategies."
+      },
+      "next_action": "Read caller default fwd_hours from author source; source evaluation originally Hyperliquid, not Binance. Verify BB/Keltner implementation (ATR def and current-bar exclusion).",
+      "registered": false,
+      "causal_verified": false,
+      "native_stage1_screened": false,
+      "warden_verdict": null
+    },
+    {
+      "id": "TH-20261031-B15-CS-BB-RSI-TAIL",
+      "title": "Bollinger-tail and RSI exhaustion reversion",
+      "source": {
+        "kind": "PINNED_GITHUB_FIRST_PARTY_CODE",
+        "original_repository": "https://github.com/CShear/crack-the-nut",
+        "commit": "72f293c19a61e01507f322595e3982da00f0932d",
+        "blob_sha1": "2db11b6b32cd24909b8c3f76baa5c8a503a3be4b",
+        "captured_at_utc": "2026-10-31T07:01:28Z",
+        "author_commit_date_utc": "2026-04-03T17:47:03Z",
+        "captured_via": "GitHub connector fetch_file exact 40-character Git commit",
+        "historical_source_vintage_confirmed": false,
+        "trust": "Untrusted research evidence; publisher code not executed",
+        "original_url": "https://github.com/CShear/crack-the-nut/blob/72f293c19a61e01507f322595e3982da00f0932d/analog/strategies.py#L409-L446",
+        "function_lines": "L409-L446"
+      },
+      "independent_mechanism": "Bollinger-tail and RSI exhaustion reversion",
+      "economic_rationale": "Prices overshoot statistical envelope under temporary liquidation or behavioral attention and revert.",
+      "counterparty": "Short-term overreacting liquidity takers; price pressure reverts only when fees paid.",
+      "original_market": "Hyperliquid crypto perp 4h analog forward-return evaluator; instrument often BTC primary with listed secondary assets and funding as noted",
+      "proposed_market": "Binance USD-M BTCUSDT 1h if independently authorized; possible 4h original-cadence alternative must use existing approved matching contract",
+      "raw_data": {
+        "status": "EXPLORATORY_MARKET_DATA_PRESENT_FEATURE_CONTRACT_UNRESOLVED",
+        "contract": "AUTO_CRYPTO_PERPS_TOP100_1H_V1_H24_E24_F45_S20_V1 (possible adaptation, not source-faithful approval)",
+        "instrument": "BTCUSDT, plus secondary/funding inputs where required",
+        "rows_btc": 21888,
+        "expected_frequency": "1h target versus original 4h",
+        "holdout": "UNOPENED"
+      },
+      "original_source_rules": {
+        "closed_bar_signal": "BTC close<=BB20 lower (mean ±2σ) and RSI14<=30 enter long; close>=BB upper and RSI>=70 enter short.",
+        "entry": "Trade next-hour open only after completed qualifying close; no bracket orders.",
+        "exit": "Source computes forward_return(ts,fwd_hours) and never defines explicit BB/RSI position exit; proposed 4h time exit is NEW.",
+        "sizing": "Direction one unit, source does not declare portfolio risk control.",
+        "holding_label": "Source is 4h bar analog; translated 20×4h and RSI14×4h to 1h duration would change sampling; choose independently only after derivation.",
+        "session_timezone": "UTC around 4h source bars; settlement requires separate venue clock verification"
+      },
+      "proposed_adaptation": {
+        "status": "UNIMPLEMENTED_NOT_SCREENABLE",
+        "signal": "Must retain source rule thresholds while converting chronological duration/cadence explicitly, without optimizing from Warden validation",
+        "entry": "Proposed NEXT_BAR execution after last closed bar, NEVER source same-close prediction",
+        "exit": "Proposed fixed 4h or 8h timeout per field above; source does NOT independently freeze fwd_hours or exit, so this is a newly proposed adaptation, not a claimed original rule.",
+        "sizing": "Bound by current native Warden limits; author-specific leverage may differ",
+        "horizon": "4h or 8h proposal only; needs chosen fixed fwd_hours under source rules",
+        "time_zone": "UTC",
+        "difference_from_source": "Hyperliquid 4h evaluator -> Binance USD-M 1h next-open portfolio return with explicit native costs; source's missing position lifecycle and external evaluation horizon make scientific preflight BLOCKED."
+      },
+      "cost_model": {
+        "model": "approved existing crypto 1h contract only; for PROPOSED adaptation",
+        "taker_bps_side": 4.5,
+        "slippage_bps_side": 2,
+        "estimated_round_trip_bps": 13,
+        "funding": "native 8h funding adjustment if available and point-in-time; no synthetic rates",
+        "broker_execution": "NOT VERIFIED"
+      },
+      "baseline": "Plain RSI14 threshold and unconditional 4h hold same side. Flat/cash plus unconditioned BTCUSDT equal-time directional exposure at same notional, holding horizon, and Warden costs; additional simple predeclared signal baseline if activated.",
+      "falsification": "If activated after preregistration, native Warden rules_ts must meet PF >=1.15, time-in-market >=5%, block bootstrap p<0.05 and native conditional return/cost edge; reject on any gate failure and freeze. Cost stress at 2x and +1 bar later. This is a predeclared protocol, not an observed verdict.",
+      "source_selection_history": "First-party README advertises 63 evaluated strategies over 13 Hyperliquid assets, optimization, walk-forward selection, and 138 profitable combinations; no independent adjustment demonstrated for this source selection. All share this publisher-side search family, not 9 independent untouched OOS examples.",
+      "pit_controls": [
+        "Use only completed bars at decision timestamp; compare with data available no later than that timestamp.",
+        "Warden supplies one-bar NEXT_BAR execution delay; never manually prelag or use same-bar close fills.",
+        "Use training-fold-only estimates and causal prefix-invariance; preserve validation and sealed holdout boundaries.",
+        "Account for all 63 documented published strategies and 13 asset variants in selection multiplicity; avoid independent-alpha claims."
+      ],
+      "preflight": {
+        "status": "BLOCKED_EXIT_TIMEFRAME_AND_SELECTION",
+        "details": "Source code computes forward_return(ts,fwd_hours), fwd_hours is passed externally; no timestamped entry->exit trade ledger. Venue/frequency adaptation and cost floors would change measured outcomes. Do not interpret callables as ready-to-execute strategies."
+      },
+      "next_action": "Do not transplant bar-count windows to hourly blindly; 4h-approved contract may preserve bar math but must check data/provider and frozen 4h horizon; source fwd_hours is external.",
+      "registered": false,
+      "causal_verified": false,
+      "native_stage1_screened": false,
+      "warden_verdict": null
+    },
+    {
+      "id": "TH-20261031-B15-CS-BTCETH-RATIO",
+      "title": "BTC/ETH relative-value mean reversion with incomplete hedge",
+      "source": {
+        "kind": "PINNED_GITHUB_FIRST_PARTY_CODE",
+        "original_repository": "https://github.com/CShear/crack-the-nut",
+        "commit": "72f293c19a61e01507f322595e3982da00f0932d",
+        "blob_sha1": "2db11b6b32cd24909b8c3f76baa5c8a503a3be4b",
+        "captured_at_utc": "2026-10-31T07:01:28Z",
+        "author_commit_date_utc": "2026-04-03T17:47:03Z",
+        "captured_via": "GitHub connector fetch_file exact 40-character Git commit",
+        "historical_source_vintage_confirmed": false,
+        "trust": "Untrusted research evidence; publisher code not executed",
+        "original_url": "https://github.com/CShear/crack-the-nut/blob/72f293c19a61e01507f322595e3982da00f0932d/analog/strategies.py#L485-L532",
+        "function_lines": "L485-L532"
+      },
+      "independent_mechanism": "BTC/ETH relative-value mean reversion with incomplete hedge",
+      "economic_rationale": "Relative ETH/BTC valuation extremes revert if price discrepancy reflects temporary flow imbalance.",
+      "counterparty": "Relative-value BTC-vs-ETH allocator; directional BTC beta is a major confounder.",
+      "original_market": "Hyperliquid crypto perp 4h analog forward-return evaluator; instrument often BTC primary with listed secondary assets and funding as noted",
+      "proposed_market": "Binance USD-M BTCUSDT 1h if independently authorized; possible 4h original-cadence alternative must use existing approved matching contract",
+      "raw_data": {
+        "status": "EXPLORATORY_MARKET_DATA_PRESENT_FEATURE_CONTRACT_UNRESOLVED",
+        "contract": "AUTO_CRYPTO_PERPS_TOP100_1H_V1_H24_E24_F45_S20_V1 (possible adaptation, not source-faithful approval)",
+        "instrument": "BTCUSDT, plus secondary/funding inputs where required",
+        "rows_btc": 21888,
+        "expected_frequency": "1h target versus original 4h",
+        "holdout": "UNOPENED"
+      },
+      "original_source_rules": {
+        "closed_bar_signal": "Compute ETH/BTC close ratio rolling 120 source 4h bars and z-score. At z>=2, long BTC; at z<=-2, short BTC.",
+        "entry": "Signal after complete matched BTC and ETH bars; only BTC leg traded in publisher code.",
+        "exit": "External fwd_hours forward BTC outcome; no actual two-leg OU spread exit or hedge rebalance.",
+        "sizing": "One directional BTC unit; no ETH short hedge despite original title suggesting pairs.",
+        "holding_label": "120×4h source ratio lookback, proposed 8h fixed timeout; NOT a faithful hedged spread reproduction.",
+        "session_timezone": "UTC around 4h source bars; settlement requires separate venue clock verification"
+      },
+      "proposed_adaptation": {
+        "status": "UNIMPLEMENTED_NOT_SCREENABLE",
+        "signal": "Must retain source rule thresholds while converting chronological duration/cadence explicitly, without optimizing from Warden validation",
+        "entry": "Proposed NEXT_BAR execution after last closed bar, NEVER source same-close prediction",
+        "exit": "Proposed fixed 4h or 8h timeout per field above; source does NOT independently freeze fwd_hours or exit, so this is a newly proposed adaptation, not a claimed original rule.",
+        "sizing": "Bound by current native Warden limits; author-specific leverage may differ",
+        "horizon": "4h or 8h proposal only; needs chosen fixed fwd_hours under source rules",
+        "time_zone": "UTC",
+        "difference_from_source": "Hyperliquid 4h evaluator -> Binance USD-M 1h next-open portfolio return with explicit native costs; source's missing position lifecycle and external evaluation horizon make scientific preflight BLOCKED."
+      },
+      "cost_model": {
+        "model": "approved existing crypto 1h contract only; for PROPOSED adaptation",
+        "taker_bps_side": 4.5,
+        "slippage_bps_side": 2,
+        "estimated_round_trip_bps": 13,
+        "funding": "native 8h funding adjustment if available and point-in-time; no synthetic rates",
+        "broker_execution": "NOT VERIFIED"
+      },
+      "baseline": "Beta-matched BTC directional and actual two-leg spread book (must be independent hypotheses). Flat/cash plus unconditioned BTCUSDT equal-time directional exposure at same notional, holding horizon, and Warden costs; additional simple predeclared signal baseline if activated.",
+      "falsification": "If activated after preregistration, native Warden rules_ts must meet PF >=1.15, time-in-market >=5%, block bootstrap p<0.05 and native conditional return/cost edge; reject on any gate failure and freeze. Cost stress at 2x and +1 bar later. This is a predeclared protocol, not an observed verdict.",
+      "source_selection_history": "First-party README advertises 63 evaluated strategies over 13 Hyperliquid assets, optimization, walk-forward selection, and 138 profitable combinations; no independent adjustment demonstrated for this source selection. All share this publisher-side search family, not 9 independent untouched OOS examples.",
+      "pit_controls": [
+        "Use only completed bars at decision timestamp; compare with data available no later than that timestamp.",
+        "Warden supplies one-bar NEXT_BAR execution delay; never manually prelag or use same-bar close fills.",
+        "Use training-fold-only estimates and causal prefix-invariance; preserve validation and sealed holdout boundaries.",
+        "Account for all 63 documented published strategies and 13 asset variants in selection multiplicity; avoid independent-alpha claims."
+      ],
+      "preflight": {
+        "status": "BLOCKED_MISSING_HEDGE_AND_EXIT",
+        "details": "Source code computes forward_return(ts,fwd_hours), fwd_hours is passed externally; no timestamped entry->exit trade ledger. Venue/frequency adaptation and cost floors would change measured outcomes. Do not interpret callables as ready-to-execute strategies."
+      },
+      "next_action": "Do not classify code as market-neutral pairs, no OU model fit; specify real spread hedge and venue transfer separately or test only disclosed BTC-directional proxy with full search accounting.",
+      "registered": false,
+      "causal_verified": false,
+      "native_stage1_screened": false,
+      "warden_verdict": null
+    },
+    {
+      "id": "TH-20261031-B15-CS-KAMA-ER-TREND",
+      "title": "Kaufman adaptive efficiency-ratio directional filter",
+      "source": {
+        "kind": "PINNED_GITHUB_FIRST_PARTY_CODE",
+        "original_repository": "https://github.com/CShear/crack-the-nut",
+        "commit": "72f293c19a61e01507f322595e3982da00f0932d",
+        "blob_sha1": "2db11b6b32cd24909b8c3f76baa5c8a503a3be4b",
+        "captured_at_utc": "2026-10-31T07:01:28Z",
+        "author_commit_date_utc": "2026-04-03T17:47:03Z",
+        "captured_via": "GitHub connector fetch_file exact 40-character Git commit",
+        "historical_source_vintage_confirmed": false,
+        "trust": "Untrusted research evidence; publisher code not executed",
+        "original_url": "https://github.com/CShear/crack-the-nut/blob/72f293c19a61e01507f322595e3982da00f0932d/analog/strategies.py#L704-L752",
+        "function_lines": "L704-L752"
+      },
+      "independent_mechanism": "Kaufman adaptive efficiency-ratio directional filter",
+      "economic_rationale": "Adaptive filter tracks efficient trending markets and suppresses choppy noise.",
+      "counterparty": "Countertrend liquidity providers in high-efficiency moves.",
+      "original_market": "Hyperliquid crypto perp 4h analog forward-return evaluator; instrument often BTC primary with listed secondary assets and funding as noted",
+      "proposed_market": "Binance USD-M BTCUSDT 1h if independently authorized; possible 4h original-cadence alternative must use existing approved matching contract",
+      "raw_data": {
+        "status": "EXPLORATORY_MARKET_DATA_PRESENT_FEATURE_CONTRACT_UNRESOLVED",
+        "contract": "AUTO_CRYPTO_PERPS_TOP100_1H_V1_H24_E24_F45_S20_V1 (possible adaptation, not source-faithful approval)",
+        "instrument": "BTCUSDT, plus secondary/funding inputs where required",
+        "rows_btc": 21888,
+        "expected_frequency": "1h target versus original 4h",
+        "holdout": "UNOPENED"
+      },
+      "original_source_rules": {
+        "closed_bar_signal": "Compute Kaufman Adaptive MA using ER20, smoothing 2/30, history current source 4h close; long if close>KAMA by 0.1%, short if close<KAMA by 0.1%; otherwise no signal.",
+        "entry": "At completed bar with gap threshold; next-bar open assumed in proposed adaptation.",
+        "exit": "Publisher returns signed fwd_hours outcome, no permanent position state or close rule; proposed 8h timed exit is new.",
+        "sizing": "One unit directional (not a true crossover), no source stop.",
+        "holding_label": "ER20 source 4h bars + 30 warmup; hourly 1:1 bar conversion distorts chronological horizons.",
+        "session_timezone": "UTC around 4h source bars; settlement requires separate venue clock verification"
+      },
+      "proposed_adaptation": {
+        "status": "UNIMPLEMENTED_NOT_SCREENABLE",
+        "signal": "Must retain source rule thresholds while converting chronological duration/cadence explicitly, without optimizing from Warden validation",
+        "entry": "Proposed NEXT_BAR execution after last closed bar, NEVER source same-close prediction",
+        "exit": "Proposed fixed 4h or 8h timeout per field above; source does NOT independently freeze fwd_hours or exit, so this is a newly proposed adaptation, not a claimed original rule.",
+        "sizing": "Bound by current native Warden limits; author-specific leverage may differ",
+        "horizon": "4h or 8h proposal only; needs chosen fixed fwd_hours under source rules",
+        "time_zone": "UTC",
+        "difference_from_source": "Hyperliquid 4h evaluator -> Binance USD-M 1h next-open portfolio return with explicit native costs; source's missing position lifecycle and external evaluation horizon make scientific preflight BLOCKED."
+      },
+      "cost_model": {
+        "model": "approved existing crypto 1h contract only; for PROPOSED adaptation",
+        "taker_bps_side": 4.5,
+        "slippage_bps_side": 2,
+        "estimated_round_trip_bps": 13,
+        "funding": "native 8h funding adjustment if available and point-in-time; no synthetic rates",
+        "broker_execution": "NOT VERIFIED"
+      },
+      "baseline": "Plain EMA20/30 directional filter with same 0.1% gap and horizon. Flat/cash plus unconditioned BTCUSDT equal-time directional exposure at same notional, holding horizon, and Warden costs; additional simple predeclared signal baseline if activated.",
+      "falsification": "If activated after preregistration, native Warden rules_ts must meet PF >=1.15, time-in-market >=5%, block bootstrap p<0.05 and native conditional return/cost edge; reject on any gate failure and freeze. Cost stress at 2x and +1 bar later. This is a predeclared protocol, not an observed verdict.",
+      "source_selection_history": "First-party README advertises 63 evaluated strategies over 13 Hyperliquid assets, optimization, walk-forward selection, and 138 profitable combinations; no independent adjustment demonstrated for this source selection. All share this publisher-side search family, not 9 independent untouched OOS examples.",
+      "pit_controls": [
+        "Use only completed bars at decision timestamp; compare with data available no later than that timestamp.",
+        "Warden supplies one-bar NEXT_BAR execution delay; never manually prelag or use same-bar close fills.",
+        "Use training-fold-only estimates and causal prefix-invariance; preserve validation and sealed holdout boundaries.",
+        "Account for all 63 documented published strategies and 13 asset variants in selection multiplicity; avoid independent-alpha claims."
+      ],
+      "preflight": {
+        "status": "BLOCKED_UNFROZEN_EXIT_AND_AUTHOR_SELECTION",
+        "details": "Source code computes forward_return(ts,fwd_hours), fwd_hours is passed externally; no timestamped entry->exit trade ledger. Venue/frequency adaptation and cost floors would change measured outcomes. Do not interpret callables as ready-to-execute strategies."
+      },
+      "next_action": "Verify code's KAMA warmup and closed-bar invariance on same 4h cadence; freeze independent benchmark, do not tune ER bands post hoc.",
+      "registered": false,
+      "causal_verified": false,
+      "native_stage1_screened": false,
+      "warden_verdict": null
+    },
+    {
+      "id": "TH-20261031-B15-CS-SETTLEMENT-UNWIND",
+      "title": "Pre-funding settlement predictable paying-side unwind",
+      "source": {
+        "kind": "PINNED_GITHUB_FIRST_PARTY_CODE",
+        "original_repository": "https://github.com/CShear/crack-the-nut",
+        "commit": "72f293c19a61e01507f322595e3982da00f0932d",
+        "blob_sha1": "2db11b6b32cd24909b8c3f76baa5c8a503a3be4b",
+        "captured_at_utc": "2026-10-31T07:01:28Z",
+        "author_commit_date_utc": "2026-04-03T17:47:03Z",
+        "captured_via": "GitHub connector fetch_file exact 40-character Git commit",
+        "historical_source_vintage_confirmed": false,
+        "trust": "Untrusted research evidence; publisher code not executed",
+        "original_url": "https://github.com/CShear/crack-the-nut/blob/72f293c19a61e01507f322595e3982da00f0932d/analog/strategies.py#L953-L994",
+        "function_lines": "L953-L994"
+      },
+      "independent_mechanism": "Pre-funding settlement predictable paying-side unwind",
+      "economic_rationale": "Funding payers may preemptively flatten exposures before settlement, creating scheduled directional pressure.",
+      "counterparty": "Funding payers unwinding, opposite-side counterparties providing liquidity.",
+      "original_market": "Hyperliquid crypto perp 4h analog forward-return evaluator; instrument often BTC primary with listed secondary assets and funding as noted",
+      "proposed_market": "Binance USD-M BTCUSDT 1h if independently authorized; possible 4h original-cadence alternative must use existing approved matching contract",
+      "raw_data": {
+        "status": "EXPLORATORY_MARKET_DATA_PRESENT_FEATURE_CONTRACT_UNRESOLVED",
+        "contract": "AUTO_CRYPTO_PERPS_TOP100_1H_V1_H24_E24_F45_S20_V1 (possible adaptation, not source-faithful approval)",
+        "instrument": "BTCUSDT, plus secondary/funding inputs where required",
+        "rows_btc": 21888,
+        "expected_frequency": "1h target versus original 4h",
+        "holdout": "UNOPENED"
+      },
+      "original_source_rules": {
+        "closed_bar_signal": "On UTC hours 2–4 before settlement 00/08/16, abs BTC funding rate>=0.0001, short if positive, long if negative.",
+        "entry": "Next-hour entry after latest *published estimated* funding signal (not finalized future rate).",
+        "exit": "Source returns directional price forward_return plus abs(current funding)*fwd_hours/8 and subtracts flat commission; no fixed fwd horizon.",
+        "sizing": "One unit BTC direction.",
+        "holding_label": "2–4h before settlement clock, proposed 2h exit before settlement (ORIGINAL source not explicit); must not credit funding without holding to settlement.",
+        "session_timezone": "UTC around 4h source bars; settlement requires separate venue clock verification"
+      },
+      "proposed_adaptation": {
+        "status": "UNIMPLEMENTED_NOT_SCREENABLE",
+        "signal": "Must retain source rule thresholds while converting chronological duration/cadence explicitly, without optimizing from Warden validation",
+        "entry": "Proposed NEXT_BAR execution after last closed bar, NEVER source same-close prediction",
+        "exit": "Proposed fixed 4h or 8h timeout per field above; source does NOT independently freeze fwd_hours or exit, so this is a newly proposed adaptation, not a claimed original rule.",
+        "sizing": "Bound by current native Warden limits; author-specific leverage may differ",
+        "horizon": "4h or 8h proposal only; needs chosen fixed fwd_hours under source rules",
+        "time_zone": "UTC",
+        "difference_from_source": "Hyperliquid 4h evaluator -> Binance USD-M 1h next-open portfolio return with explicit native costs; source's missing position lifecycle and external evaluation horizon make scientific preflight BLOCKED."
+      },
+      "cost_model": {
+        "model": "approved existing crypto 1h contract only; for PROPOSED adaptation",
+        "taker_bps_side": 4.5,
+        "slippage_bps_side": 2,
+        "estimated_round_trip_bps": 13,
+        "funding": "native 8h funding adjustment if available and point-in-time; no synthetic rates",
+        "broker_execution": "NOT VERIFIED"
+      },
+      "baseline": "Clock-only same-hour BTC directional drift plus known funding-sign filter. Flat/cash plus unconditioned BTCUSDT equal-time directional exposure at same notional, holding horizon, and Warden costs; additional simple predeclared signal baseline if activated.",
+      "falsification": "If activated after preregistration, native Warden rules_ts must meet PF >=1.15, time-in-market >=5%, block bootstrap p<0.05 and native conditional return/cost edge; reject on any gate failure and freeze. Cost stress at 2x and +1 bar later. This is a predeclared protocol, not an observed verdict.",
+      "source_selection_history": "First-party README advertises 63 evaluated strategies over 13 Hyperliquid assets, optimization, walk-forward selection, and 138 profitable combinations; no independent adjustment demonstrated for this source selection. All share this publisher-side search family, not 9 independent untouched OOS examples.",
+      "pit_controls": [
+        "Use only completed bars at decision timestamp; compare with data available no later than that timestamp.",
+        "Warden supplies one-bar NEXT_BAR execution delay; never manually prelag or use same-bar close fills.",
+        "Use training-fold-only estimates and causal prefix-invariance; preserve validation and sealed holdout boundaries.",
+        "Account for all 63 documented published strategies and 13 asset variants in selection multiplicity; avoid independent-alpha claims."
+      ],
+      "preflight": {
+        "status": "BLOCKED_PIT_SETTLEMENT_AND_PNL_ACCOUNTING",
+        "details": "Source code computes forward_return(ts,fwd_hours), fwd_hours is passed externally; no timestamped entry->exit trade ledger. Venue/frequency adaptation and cost floors would change measured outcomes. Do not interpret callables as ready-to-execute strategies."
+      },
+      "next_action": "Do not use settlement finalized rate before it is published, or credit funding on pre-settlement exit. Require real publication lag, correct timezone and causal rate vintages; freeze exit independently.",
+      "registered": false,
+      "causal_verified": false,
+      "native_stage1_screened": false,
+      "warden_verdict": null
+    },
+    {
+      "id": "TH-20261031-B15-CS-TSMOM-7D",
+      "title": "7-day directional momentum with volatility scaling",
+      "source": {
+        "kind": "PINNED_GITHUB_FIRST_PARTY_CODE",
+        "original_repository": "https://github.com/CShear/crack-the-nut",
+        "commit": "72f293c19a61e01507f322595e3982da00f0932d",
+        "blob_sha1": "2db11b6b32cd24909b8c3f76baa5c8a503a3be4b",
+        "captured_at_utc": "2026-10-31T07:01:28Z",
+        "author_commit_date_utc": "2026-04-03T17:47:03Z",
+        "captured_via": "GitHub connector fetch_file exact 40-character Git commit",
+        "historical_source_vintage_confirmed": false,
+        "trust": "Untrusted research evidence; publisher code not executed",
+        "original_url": "https://github.com/CShear/crack-the-nut/blob/72f293c19a61e01507f322595e3982da00f0932d/analog/strategies.py#L35-L63",
+        "function_lines": "L35-L63"
+      },
+      "independent_mechanism": "7-day directional momentum with volatility scaling",
+      "economic_rationale": "Slow trend continuation as institutional risk budgets and reaction times diffuse price information.",
+      "counterparty": "Slow hedgers and countertrend traders providing liquidity.",
+      "original_market": "Hyperliquid crypto perp 4h analog forward-return evaluator; instrument often BTC primary with listed secondary assets and funding as noted",
+      "proposed_market": "Binance USD-M BTCUSDT 1h if independently authorized; possible 4h original-cadence alternative must use existing approved matching contract",
+      "raw_data": {
+        "status": "EXPLORATORY_MARKET_DATA_PRESENT_FEATURE_CONTRACT_UNRESOLVED",
+        "contract": "AUTO_CRYPTO_PERPS_TOP100_1H_V1_H24_E24_F45_S20_V1 (possible adaptation, not source-faithful approval)",
+        "instrument": "BTCUSDT, plus secondary/funding inputs where required",
+        "rows_btc": 21888,
+        "expected_frequency": "1h target versus original 4h",
+        "holdout": "UNOPENED"
+      },
+      "original_source_rules": {
+        "closed_bar_signal": "Sign of BTC trailing 7-day return (42 4h bars), scale risk to 15% annualized realized vol capped at 2x leverage.",
+        "entry": "At author evaluator timestamp, long if trailing return >0; short otherwise, weights scaled by historical volatility.",
+        "exit": "The paper-style callable computes realized directional return at fwd_hours chosen by external caller; no position exit or hold duration frozen within function.",
+        "sizing": "15% vol target, max 2.0x notional.",
+        "holding_label": "168h lookback; external fwd_hours/4h source intervals; proposed 4h fixed close-bar timeout (NEW adaptation, not author exit).",
+        "session_timezone": "UTC around 4h source bars; settlement requires separate venue clock verification"
+      },
+      "proposed_adaptation": {
+        "status": "UNIMPLEMENTED_NOT_SCREENABLE",
+        "signal": "Must retain source rule thresholds while converting chronological duration/cadence explicitly, without optimizing from Warden validation",
+        "entry": "Proposed NEXT_BAR execution after last closed bar, NEVER source same-close prediction",
+        "exit": "Proposed fixed 4h or 8h timeout per field above; source does NOT independently freeze fwd_hours or exit, so this is a newly proposed adaptation, not a claimed original rule.",
+        "sizing": "Bound by current native Warden limits; author-specific leverage may differ",
+        "horizon": "4h or 8h proposal only; needs chosen fixed fwd_hours under source rules",
+        "time_zone": "UTC",
+        "difference_from_source": "Hyperliquid 4h evaluator -> Binance USD-M 1h next-open portfolio return with explicit native costs; source's missing position lifecycle and external evaluation horizon make scientific preflight BLOCKED."
+      },
+      "cost_model": {
+        "model": "approved existing crypto 1h contract only; for PROPOSED adaptation",
+        "taker_bps_side": 4.5,
+        "slippage_bps_side": 2,
+        "estimated_round_trip_bps": 13,
+        "funding": "native 8h funding adjustment if available and point-in-time; no synthetic rates",
+        "broker_execution": "NOT VERIFIED"
+      },
+      "baseline": "BNB/BTC directional buy-hold equal-time and funding-adjusted 4h control. Flat/cash plus unconditioned BTCUSDT equal-time directional exposure at same notional, holding horizon, and Warden costs; additional simple predeclared signal baseline if activated.",
+      "falsification": "If activated after preregistration, native Warden rules_ts must meet PF >=1.15, time-in-market >=5%, block bootstrap p<0.05 and native conditional return/cost edge; reject on any gate failure and freeze. Cost stress at 2x and +1 bar later. This is a predeclared protocol, not an observed verdict.",
+      "source_selection_history": "First-party README advertises 63 evaluated strategies over 13 Hyperliquid assets, optimization, walk-forward selection, and 138 profitable combinations; no independent adjustment demonstrated for this source selection. All share this publisher-side search family, not 9 independent untouched OOS examples.",
+      "pit_controls": [
+        "Use only completed bars at decision timestamp; compare with data available no later than that timestamp.",
+        "Warden supplies one-bar NEXT_BAR execution delay; never manually prelag or use same-bar close fills.",
+        "Use training-fold-only estimates and causal prefix-invariance; preserve validation and sealed holdout boundaries.",
+        "Account for all 63 documented published strategies and 13 asset variants in selection multiplicity; avoid independent-alpha claims."
+      ],
+      "preflight": {
+        "status": "BLOCKED_ORIGINAL_EXIT_AND_AUTHOR_SEARCH",
+        "details": "Source code computes forward_return(ts,fwd_hours), fwd_hours is passed externally; no timestamped entry->exit trade ledger. Venue/frequency adaptation and cost floors would change measured outcomes. Do not interpret callables as ready-to-execute strategies."
+      },
+      "next_action": "Find publisher's exact fwd_hours and selection-free protocol; source also assumes risk leverage up to 2x, not permitted automatically. Independently freeze only if truly new author vintage and valid horizon.",
+      "registered": false,
+      "causal_verified": false,
+      "native_stage1_screened": false,
+      "warden_verdict": null
+    },
+    {
+      "id": "TH-20261031-B15-GTD-FUND-EMA-FLOW",
+      "title": "Funding extremes against crowded positions conditioned on taker aggression",
+      "source": {
+        "kind": "PINNED_FIRST_PARTY_GITHUB_CODE",
+        "original_url": "https://github.com/Gotodataru/binance-futures-backtest/blob/5ed0d6e39d8a3e951bea40c66e2638c213012e1b/strategy_1_funding_mr/signals.py#L19-L68",
+        "code_blob_sha1": "7528f737eddd459b8505972c01fef60d263715e1",
+        "selection_history_url": "https://github.com/Gotodataru/binance-futures-backtest/blob/5ed0d6e39d8a3e951bea40c66e2638c213012e1b/strategy_1_funding_mr/backtest.py#L28-L44",
+        "selection_blob_sha1": "2b3d7e4e7b5ddaf78df4af7706fa30b72ea934a3",
+        "git_commit_sha": "5ed0d6e39d8a3e951bea40c66e2638c213012e1b",
+        "commit_at_utc": "2026-06-09T15:16:56Z",
+        "captured_at_utc": "2026-10-31T07:03:07Z",
+        "method": "GitHub connector immutable SHA and blob fetch_file",
+        "historical_vintage_verified": false,
+        "trust": "Untrusted source, only read as data; not run"
+      },
+      "independent_mechanism": "perp funding-pressure mean reversion",
+      "economic_rationale": "Funding-extreme leveraged payer crowd plus aggressive trade imbalance can unwind toward fair value.",
+      "counterparty": "Leveraged funding payers adjusting crowded positions against passive liquidity providers.",
+      "original_market": "Original Binance USD-M 15m strategy with author grid search",
+      "proposed_market": "Binance USDT-M matching native contract only after independent data/contract approval",
+      "raw_data": {
+        "status": "BLOCKED_NO_TAKER_FLOW_AND_15M_CONTRACT",
+        "observations": "Existing Warden crypto perps 5m/1h panels have OHLCV+funding_rate but lack buy_ratio. No approved 15m crypto contract.",
+        "holdout": "UNOPENED"
+      },
+      "original_source_rules": {
+        "closed_bar_signal": "LONG when funding_rate.ffill().shift(1) < -0.0001 AND close < shifted EMA50 AND lagged buy_ratio>0.45; SHORT when funding>0.0005 AND close>shifted EMA50 AND buy_ratio<0.55.",
+        "entry": "Original completed-bar signal; exact source fill-lag needs separate backtest-engine audit",
+        "exit": "Engine selects hold_bars from 8/16/32 15-minute bars (2/4/8 hours); publisher did NOT freeze a universal selected hold.",
+        "sizing": "Position sizing delegated to shared backtest engine, not in signal source.",
+        "holding_label": "Engine selects hold_bars from 8/16/32 15-minute bars (2/4/8 hours); publisher did NOT freeze a universal selected hold.",
+        "session_timezone": "Original UTC assumed from exchange, not verified against source loader"
+      },
+      "proposed_adaptation": {
+        "status": "NOT_PREREGISTERED_NOT_SCREENABLE",
+        "entry": "No same-close fill; Warden NEXT_BAR mandatory at original sampling cadence",
+        "exit": "No source-selected exit parameter may be chosen by Warden validation; freeze independently after author selection audit.",
+        "sizing": "Native bounded position cap, not source engine as implemented",
+        "horizon": "Original 2–8h candidate windows, exact choice NOT frozen",
+        "session_timezone": "UTC proposed",
+        "difference_from_source": "No source-faithful runnable Warden strategy while required PIT data or matching cadence absent."
+      },
+      "cost_model": {
+        "contract": "Approved crypto NEXT_BAR bps only where matching label and observed columns",
+        "taker_fee_bps_per_side": 4.5,
+        "slippage_bps_per_side": 2,
+        "modelled_total_bps_roundtrip": 13,
+        "additional_funding": "native PIT funding only, no synthetic settlement assumption",
+        "original_publisher_cost": "not independently validated"
+      },
+      "baseline": "Same-clock buy-and-hold and unconditional flow-neutral/rate-neutral price-only rule at same position risk/cost.",
+      "falsification": "If separately authorized and preregistered, native rules_ts gates PF>=1.15, time-in-market>=5%, block bootstrap p<0.05 and economic edge >native cost; exit and sizing frozen BEFORE any Warden screen. No search reset; report Stage3 2x cost, +1 bar latency only after legitimate Stage1 PASS.",
+      "source_selection_history": "Publisher tests 3 EMA × 3 high funding × 3 low funding × 3 holds =81 selected cells per symbol and walk-forward window.",
+      "pit_controls": [
+        "Only as-of funding, trade-aggressor ratio and OI with true publication timestamps",
+        "No current-bar features before bar close; Warden injects 1-bar execution delay",
+        "Fold-local hyperparameters, no looking at test/OOS to choose stop/target and no false independent 2nd evaluation"
+      ],
+      "preflight": {
+        "status": "BLOCKED_NO_TAKER_FLOW_AND_15M_CONTRACT",
+        "details": "Existing Warden crypto perps 5m/1h panels have OHLCV+funding_rate but lack buy_ratio. No approved 15m crypto contract."
+      },
+      "next_action": "Acquire authentic PIT 15m taker ratio plus published funding, approve new dataset/contract and freeze one hold without Warden validation tuning.",
+      "registered": false,
+      "causal_verified": false,
+      "native_stage1_screened": false,
+      "warden_verdict": null
+    },
+    {
+      "id": "TH-20261031-B15-GTD-OI-DIVERGENCE",
+      "title": "OI and price divergence separates new positioning from unwinds",
+      "source": {
+        "kind": "PINNED_FIRST_PARTY_GITHUB_CODE",
+        "original_url": "https://github.com/Gotodataru/binance-futures-backtest/blob/5ed0d6e39d8a3e951bea40c66e2638c213012e1b/strategy_3_oi_divergence/signals.py#L20-L69",
+        "code_blob_sha1": "be177d2b24a740bc3ac46115326780c48582ec3e",
+        "selection_history_url": "https://github.com/Gotodataru/binance-futures-backtest/blob/5ed0d6e39d8a3e951bea40c66e2638c213012e1b/strategy_3_oi_divergence/backtest.py#L32-L50",
+        "selection_blob_sha1": "89963a739a99144e7abbbae37e03ba982b9f6a58",
+        "git_commit_sha": "5ed0d6e39d8a3e951bea40c66e2638c213012e1b",
+        "commit_at_utc": "2026-06-09T15:16:56Z",
+        "captured_at_utc": "2026-10-31T07:03:07Z",
+        "method": "GitHub connector immutable SHA and blob fetch_file",
+        "historical_vintage_verified": false,
+        "trust": "Untrusted source, only read as data; not run"
+      },
+      "independent_mechanism": "open-interest positioning decomposition",
+      "economic_rationale": "Rising OI with price trend means newly assumed risk can continue; falling OI means liquidation or closing pressure may reverse.",
+      "counterparty": "New leveraged risk takers versus liquidation-driven or voluntary closers reducing exposure.",
+      "original_market": "Original Binance USD-M 15m strategy with author grid search",
+      "proposed_market": "Binance USDT-M matching native contract only after independent data/contract approval",
+      "raw_data": {
+        "status": "BLOCKED_NO_PIT_OI_TAKER_AND_15M_CONTRACT",
+        "observations": "Pinned Warden crypto 5m/1h panels lack open_interest and taker_ls_vol_ratio, and no native approved crypto 15m contract exists.",
+        "holdout": "UNOPENED"
+      },
+      "original_source_rules": {
+        "closed_bar_signal": "Lagged price pct_change 12 bars >+0.5% and OI change >+1% and taker ratio>1 => LONG; negative price and rising OI with taker ratio<1 => SHORT; if use_mr, falling OI plus price down => LONG, price up => SHORT.",
+        "entry": "Original completed-bar signal; exact source fill-lag needs separate backtest-engine audit",
+        "exit": "Author chooses hold_bars among 8/16/24 15m bars (2/4/6 hours), not a single source-frozen exit.",
+        "sizing": "Source backtest engine sizing not independently verified.",
+        "holding_label": "Author chooses hold_bars among 8/16/24 15m bars (2/4/6 hours), not a single source-frozen exit.",
+        "session_timezone": "Original UTC assumed from exchange, not verified against source loader"
+      },
+      "proposed_adaptation": {
+        "status": "NOT_PREREGISTERED_NOT_SCREENABLE",
+        "entry": "No same-close fill; Warden NEXT_BAR mandatory at original sampling cadence",
+        "exit": "No source-selected exit parameter may be chosen by Warden validation; freeze independently after author selection audit.",
+        "sizing": "Native bounded position cap, not source engine as implemented",
+        "horizon": "Original 2–8h candidate windows, exact choice NOT frozen",
+        "session_timezone": "UTC proposed",
+        "difference_from_source": "No source-faithful runnable Warden strategy while required PIT data or matching cadence absent."
+      },
+      "cost_model": {
+        "contract": "Approved crypto NEXT_BAR bps only where matching label and observed columns",
+        "taker_fee_bps_per_side": 4.5,
+        "slippage_bps_per_side": 2,
+        "modelled_total_bps_roundtrip": 13,
+        "additional_funding": "native PIT funding only, no synthetic settlement assumption",
+        "original_publisher_cost": "not independently validated"
+      },
+      "baseline": "Same-clock buy-and-hold and unconditional flow-neutral/rate-neutral price-only rule at same position risk/cost.",
+      "falsification": "If separately authorized and preregistered, native rules_ts gates PF>=1.15, time-in-market>=5%, block bootstrap p<0.05 and economic edge >native cost; exit and sizing frozen BEFORE any Warden screen. No search reset; report Stage3 2x cost, +1 bar latency only after legitimate Stage1 PASS.",
+      "source_selection_history": "Author 4 lookbacks×3 price thresholds×3 OI thresholds×3 holds×2 use_mr=216 cells per symbol, with 6m training/2m OOS walk-forward.",
+      "pit_controls": [
+        "Only as-of funding, trade-aggressor ratio and OI with true publication timestamps",
+        "No current-bar features before bar close; Warden injects 1-bar execution delay",
+        "Fold-local hyperparameters, no looking at test/OOS to choose stop/target and no false independent 2nd evaluation"
+      ],
+      "preflight": {
+        "status": "BLOCKED_NO_PIT_OI_TAKER_AND_15M_CONTRACT",
+        "details": "Pinned Warden crypto 5m/1h panels lack open_interest and taker_ls_vol_ratio, and no native approved crypto 15m contract exists."
+      },
+      "next_action": "Require timestamped Binance OI and taker ratio with release lags and an approved 15m contract. No ffill synthesized unobserved values.",
+      "registered": false,
+      "causal_verified": false,
+      "native_stage1_screened": false,
+      "warden_verdict": null
+    },
+    {
+      "id": "TH-20261031-B15-GTD-TAKER-PRESSURE",
+      "title": "Aggressive buy-volume persistence under ATR expansion",
+      "source": {
+        "kind": "PINNED_FIRST_PARTY_GITHUB_CODE",
+        "original_url": "https://github.com/Gotodataru/binance-futures-backtest/blob/5ed0d6e39d8a3e951bea40c66e2638c213012e1b/strategy_2_taker_momentum/signals.py#L19-L87",
+        "code_blob_sha1": "b8a2840618c4fb02a2d90120deed5771b34bdbd6",
+        "selection_history_url": "https://github.com/Gotodataru/binance-futures-backtest/blob/5ed0d6e39d8a3e951bea40c66e2638c213012e1b/strategy_2_taker_momentum/backtest.py#L35-L109",
+        "selection_blob_sha1": "1c0366b55c09d6d9bb55e982108f0bab6159648a",
+        "git_commit_sha": "5ed0d6e39d8a3e951bea40c66e2638c213012e1b",
+        "commit_at_utc": "2026-06-09T15:16:56Z",
+        "captured_at_utc": "2026-10-31T07:03:07Z",
+        "method": "GitHub connector immutable SHA and blob fetch_file",
+        "historical_vintage_verified": false,
+        "trust": "Untrusted source, only read as data; not run"
+      },
+      "independent_mechanism": "market-order imbalance continuation",
+      "economic_rationale": "Persistent taker demand consumes order-book liquidity faster than market makers can replenish.",
+      "counterparty": "Passive market makers and resting liquidity providers absorbing aggressive flow.",
+      "original_market": "Original Binance USD-M 5m strategy with author grid search",
+      "proposed_market": "Binance USDT-M matching native contract only after independent data/contract approval",
+      "raw_data": {
+        "status": "BLOCKED_MISSING_FLOW_OOS_SELECTION_AND_STOP_FIDELITY",
+        "observations": "Existing CRYPTO_PERPS_5M_V1 has OHLCV+funding but does NOT contain taker_buy_volume or buy_ratio.",
+        "holdout": "UNOPENED"
+      },
+      "original_source_rules": {
+        "closed_bar_signal": "LONG if lagged 15-bar mean buy_ratio>0.62 and last 3 lagged bars buy_ratio>0.5 with ATR14>0.8×ATR mean50; SHORT symmetrically (<0.38, 3 bars <0.5).",
+        "entry": "Original completed-bar signal; exact source fill-lag needs separate backtest-engine audit",
+        "exit": "Publisher optimizes 8/16 five-minute-bar holds and intrabar SL 1/2% TP 2/3.5%; no unsearched fixed exit.",
+        "sizing": "Source sizing delegated to shared engine; uncertain.",
+        "holding_label": "Publisher optimizes 8/16 five-minute-bar holds and intrabar SL 1/2% TP 2/3.5%; no unsearched fixed exit.",
+        "session_timezone": "Original UTC assumed from exchange, not verified against source loader"
+      },
+      "proposed_adaptation": {
+        "status": "NOT_PREREGISTERED_NOT_SCREENABLE",
+        "entry": "No same-close fill; Warden NEXT_BAR mandatory at original sampling cadence",
+        "exit": "No source-selected exit parameter may be chosen by Warden validation; freeze independently after author selection audit.",
+        "sizing": "Native bounded position cap, not source engine as implemented",
+        "horizon": "Original 2–8h candidate windows, exact choice NOT frozen",
+        "session_timezone": "UTC proposed",
+        "difference_from_source": "No source-faithful runnable Warden strategy while required PIT data or matching cadence absent."
+      },
+      "cost_model": {
+        "contract": "Approved crypto NEXT_BAR bps only where matching label and observed columns",
+        "taker_fee_bps_per_side": 4.5,
+        "slippage_bps_per_side": 2,
+        "modelled_total_bps_roundtrip": 13,
+        "additional_funding": "native PIT funding only, no synthetic settlement assumption",
+        "original_publisher_cost": "not independently validated"
+      },
+      "baseline": "Same-clock buy-and-hold and unconditional flow-neutral/rate-neutral price-only rule at same position risk/cost.",
+      "falsification": "If separately authorized and preregistered, native rules_ts gates PF>=1.15, time-in-market>=5%, block bootstrap p<0.05 and economic edge >native cost; exit and sizing frozen BEFORE any Warden screen. No search reset; report Stage3 2x cost, +1 bar latency only after legitimate Stage1 PASS.",
+      "source_selection_history": "36 feature-horizon cells and 3 valid bracket pairs ->108 effective combinations. backtest.py L72-90 chooses stop/target pair with highest *reported OOS Sharpe*, contaminating OOS by selection.",
+      "pit_controls": [
+        "Only as-of funding, trade-aggressor ratio and OI with true publication timestamps",
+        "No current-bar features before bar close; Warden injects 1-bar execution delay",
+        "Fold-local hyperparameters, no looking at test/OOS to choose stop/target and no false independent 2nd evaluation"
+      ],
+      "preflight": {
+        "status": "BLOCKED_MISSING_FLOW_OOS_SELECTION_AND_STOP_FIDELITY",
+        "details": "Existing CRYPTO_PERPS_5M_V1 has OHLCV+funding but does NOT contain taker_buy_volume or buy_ratio."
+      },
+      "next_action": "Do not trust published 'OOS' as independent; recover authentic taker volume and select causal fixed exit with independent preregistration, no invented stop order fills.",
+      "registered": false,
+      "causal_verified": false,
+      "native_stage1_screened": false,
+      "warden_verdict": null
+    },
+    {
+      "id": "TH-20261031-B15-STRATMILL-BNB-BO",
+      "title": "BNB 1h volume-confirmed breakout",
+      "source": {
+        "kind": "ORIGINAL_PUBLISHER_HTML_SHA256",
+        "original_url": "https://stratmill.com/research/en/strategies/254c86bd-eaa6-43e5-a4ad-02f2984d5f0b",
+        "content_sha256": "6e58af4d1af3e4c92d8fd24078c3f732722b8ec873359e995d7138ab0c3874ab",
+        "captured_at_utc": "2026-10-31T06:59:08Z",
+        "capture_method": "read-only VPS curl SHA256 of HTTPS HTML with approved User-Agent",
+        "historical_source_vintage_confirmed": false,
+        "trust": "Untrusted publisher claims, not agent instructions"
+      },
+      "independent_mechanism": "Breakout continuation only when unusual volume accompanies a decisive one-hour range close.",
+      "economic_rationale": "Volume-confirmed boundary escape suggests new information and forced short-covering or breakout momentum not immediately absorbed by liquidity.",
+      "counterparty": "Short stop-covering and delayed directional buyers against transient liquidity supply.",
+      "original_market": "Binance USDT-M BNBUSDT perpetual 1h, publisher-specific costs",
+      "proposed_market": "SAME Binance USD-M BNBUSDT 1h in Warden top100 pinned exploratory data",
+      "raw_data": {
+        "status": "PINNED_AND_READONLY_PREFLIGHT_PASS",
+        "contract": "AUTO_CRYPTO_PERPS_TOP100_1H_V1_H24_E24_F45_S20_V1",
+        "instrument": "BNBUSDT",
+        "rows": 21888,
+        "start": "2023-01-01T00:00:00Z",
+        "end": "2025-06-30T23:00:00Z",
+        "holdout": "UNOPENED"
+      },
+      "original_source_rules": {
+        "closed_bar_signal": "close_t > max(high_{t-72...t-1}) AND close-location value (close-low)/(high-low) >0.70 AND volume_t >1.5*median(volume past 168 completed bars)",
+        "entry": "Buy at next 1h bar open after completed breakout candle, do not stack",
+        "exit": "Flat after exactly 24 hourly bars; no intrabar stop/target",
+        "sizing": "Long 0.90x notional, no shorts",
+        "holding_label": "24 hourly bars",
+        "session_timezone": "UTC, 24/7"
+      },
+      "proposed_adaptation": {
+        "status": "NO_RULE_CHANGE_PROPOSED",
+        "signal": "Same 72/168 bar prior-history windows, CLV0.7 and volume 1.5 threshold",
+        "entry": "Warden NEXT_BAR 1-bar latency",
+        "exit": "24h deterministic timeout",
+        "sizing": "Original 0.90x, subject to Warden exposure caps; needs fidelity preflight",
+        "horizon": "24h",
+        "time_zone": "UTC",
+        "difference_from_source": "Research cost 6.5bps/side and native funding may differ from publisher 0.10% round-trip cost; native risk constraints may cap 0.90x."
+      },
+      "cost_model": {
+        "model": "approved existing crypto 1h contract only; for PROPOSED adaptation",
+        "taker_bps_side": 4.5,
+        "slippage_bps_side": 2,
+        "estimated_round_trip_bps": 13,
+        "funding": "native 8h funding adjustment if available and point-in-time; no synthetic rates",
+        "broker_execution": "NOT VERIFIED"
+      },
+      "baseline": "BNBUSDT unconditional 24h long at identical 0.90x exposure and turnover plus prior-high-only breakout 24h comparison; no selection from multiple baselines.",
+      "falsification": "If activated after preregistration, native Warden rules_ts must meet PF >=1.15, time-in-market >=5%, block bootstrap p<0.05 and native conditional return/cost edge; reject on any gate failure and freeze. Cost stress at 2x and +1 bar later. This is a predeclared protocol, not an observed verdict.",
+      "source_selection_history": "Publisher already reported 270 searched configurations over 9 windows, 399 trades, PF1.139, Sharpe0.540, maxDD47.114%, 3/7 profitable years, strategy ABANDONED. Publisher period overlaps Warden validation and sealed dates; NOT prospective independent evidence.",
+      "pit_controls": [
+        "72-bar upper-bound is shifted one completed bar (no current high in prior range)",
+        "Rolling volume median uses completed 168 bars excluding incomplete future; CLV only after bar close",
+        "No secondary news, account or lookahead features",
+        "No protected holdout access"
+      ],
+      "preflight": {
+        "status": "BLOCKED_PUBLISHED_NEGATIVE_ECONOMICS_AND_SELECTION",
+        "details": "Native data/contract available, but source already abandoned after 270 author-side trials and severe drawdown. Source-screen cap must not be consumed without separate scientific rationale; NO Warden registration.",
+        "native_preflight": "PASS data/digest/execution columns; does not establish candidate eligibility"
+      },
+      "next_action": "Archive immutable publisher negative prior, leave source triage separate from native rejection; prioritize a fresh independent unsearched original signal.",
+      "registered": false,
+      "causal_verified": false,
+      "native_stage1_screened": false,
+      "warden_verdict": null
+    }
+  ],
+  "next_actions": [
+    "Preserve source negative evidence and prior selection; do not register published abandoned BNB as naive independent candidate",
+    "Investigate original independent 1h Binance USD-M bounded entry AND exit sources rather than CShear evaluators with unfrozen exit",
+    "For FX5m, compare price anomalies to independent PIT FX data, document symbol-level eligibility and use independently approved new NEXT_BAR contract only",
+    "After future eligible preregistration, guard READY, writer lock, native verify and screen within cap20; append Warden native receipt and Stage3 handoff if PASS",
+    "Explicitly quarantine Gotodataru taker-momentum claimed OOS: backtest.py picks highest OOS Sharpe among stop/TP combinations, published OOS contaminated."
+  ],
+  "version_notes": "Ten source-backed mechanisms; 6 hyperliquid 4h forward-return evaluators not executable due caller-specified exit, 3 Binance original source mechanisms missing PIT flow/OI or requiring native15m, 1 original BNB 1h strategy already author-abandoned after 270 variants. No native Warden registrations/screens."
+}
