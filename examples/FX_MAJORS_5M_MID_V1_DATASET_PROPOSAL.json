@@ -1,0 +1,12 @@
+{
+  "contract_id": "FX_MAJORS_5M_MID_V1",
+  "path": "data/exploratory/fx_majors_5m.parquet",
+  "sha256": "b364e18b03a2c52c4fc2bb8c54834ce992c7dc7ac63b5bef36258fb0f627558b",
+  "provenance": "verified_market",
+  "source": "Existing FX_MAJORS_5M_V1 Warden exploratory OHLCV snapshot; origin verified, midpoint price basis not independently verified",
+  "pipeline": "Original source scripts/salvage_multi_asset.py; no new data generated",
+  "recorded_at": "2026-10-31T00:00:00Z",
+  "recorded_by": "principal-approved midpoint research proposal; unsigned",
+  "attestation": "Same immutable bytes and train/validation/holdout splits as FX_MAJORS_5M_V1. NEXT_BAR open proxy, no artificial quote columns. Cost floor includes modeled spread. PROPOSAL ONLY; NOT ACTIVE.",
+  "data_quality": "BLOCKED_PENDING_REVIEW: large anomalous interbar jumps observed (AUDUSD 97, GBPUSD 19, USDCAD 12 over 2%); these are not all proven corrupt and must be individually assessed before active screening"
+}
